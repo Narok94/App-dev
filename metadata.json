@@ -1,0 +1,6 @@
+{
+  "name": "Tatu",
+  "description": "Aplicativo premium de aprendizado prático de programação web, trilha interativa de HTML5 com foco em tecnologia, curiosidade e evolução do conhecimento.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
