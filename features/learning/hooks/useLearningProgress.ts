@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { LearningModule, UserLearningState, InteractiveLesson } from '@/types/learning';
-import { HTML_BEGINNER_TRACK } from '../data/htmlCurriculum';
-import { getLessonById, getFirstLessonOfModule } from '../data/htmlLessonsData';
+import { LearningModule, UserLearningState, InteractiveLesson, Era } from '@/types/learning';
+import {
+  getAllModules,
+  getQuestById,
+  getFirstQuestOfModule,
+  getActiveEra,
+} from '../curriculum';
 
 const STORAGE_KEY = 'tatu_learning_progress_v2';
 
@@ -9,42 +13,66 @@ export function useLearningProgress() {
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [activeLesson, setActiveLesson] = useState<InteractiveLesson | null>(null);
 
-  // Carrega estado de módulos inicial
+  // Carrega estado de módulos inicial integrando com o catálogo de currículo da Era ativa
   const [modules, setModules] = useState<LearningModule[]>(() => {
+    const baseModules = getAllModules();
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem(`${STORAGE_KEY}_modules`);
         if (saved) {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved) as LearningModule[];
+          // Mescla com a definição de currículo atual para preservar progresso do aluno
+          return baseModules.map((baseMod) => {
+            const savedMod = parsed.find((p) => p.id === baseMod.id);
+            if (!savedMod) return baseMod;
+            return {
+              ...baseMod,
+              status: savedMod.status,
+              lessons: baseMod.lessons.map((baseLesson) => {
+                const savedLesson = savedMod.lessons.find((l) => l.id === baseLesson.id);
+                return {
+                  ...baseLesson,
+                  isCompleted: savedLesson ? Boolean(savedLesson.isCompleted) : false,
+                };
+              }),
+            };
+          });
         }
       } catch (e) {
         console.warn('Erro ao carregar módulos do localStorage:', e);
       }
     }
-    return HTML_BEGINNER_TRACK;
+    return baseModules;
   });
 
   // Carrega estado do usuário
   const [userState, setUserState] = useState<UserLearningState>(() => {
+    const baseModules = getAllModules();
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
-          return JSON.parse(saved);
+          const parsed = JSON.parse(saved);
+          return {
+            ...parsed,
+            currentEraId: parsed.currentEraId || 'era-descoberta',
+          };
         }
       } catch (e) {
         console.warn('Erro ao carregar progresso do localStorage:', e);
       }
     }
-    // Estado inicial padrão com Módulo 01 pronto para ser explorado
+    // Estado inicial padrão com Módulo 01 pronto para ser explorado na Era da Descoberta
     return {
       userName: 'Explorador',
       xp: 0,
       streakDays: 1,
-      totalModulesCount: HTML_BEGINNER_TRACK.length,
+      totalModulesCount: baseModules.length,
       completedModulesCount: 0,
+      currentEraId: 'era-descoberta',
       currentModuleId: 'html-mod-1',
       completedLessonIds: [],
+      completedQuestIds: [],
       avatarMood: 'happy',
       dailyLessonsGoal: 1,
       soundEnabled: true,
@@ -52,76 +80,73 @@ export function useLearningProgress() {
     };
   });
 
-  // Salva no localStorage quando o estado for alterado
+  // Salva no localStorage quando o progresso muda
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
         localStorage.setItem(`${STORAGE_KEY}_modules`, JSON.stringify(modules));
       } catch (e) {
-        console.warn('Erro ao salvar no localStorage:', e);
+        console.warn('Erro ao salvar progresso no localStorage:', e);
       }
     }
   }, [userState, modules]);
 
-  // Módulo atual em andamento
-  const currentModule = modules.find((m) => m.id === userState.currentModuleId) || modules[0];
+  // Localiza o módulo corrente em andamento
+  const currentModule =
+    modules.find((m) => m.id === userState.currentModuleId) ||
+    modules.find((m) => m.status === 'current') ||
+    modules[0];
 
-  // Identifica a próxima lição pendente de forma inteligente
-  const nextPendingLesson = (() => {
-    const completedSet = new Set(userState.completedLessonIds || []);
-    // Procura no módulo atual
-    const pendingInCurrent = currentModule.lessons.find((l) => !completedSet.has(l.id));
-    if (pendingInCurrent) {
-      return {
-        lesson: pendingInCurrent,
-        module: currentModule,
-      };
+  // Cálculo da porcentagem total de progresso
+  const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
+  const completedLessonsCount = userState.completedLessonIds?.length || 0;
+  const progressPercent = totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
+
+  // Localiza a próxima lição / quest pendente de conclusão
+  const getNextPendingLesson = () => {
+    const currentMod = currentModule;
+    const pendingInCurrent = currentMod?.lessons.find((l) => !l.isCompleted);
+    if (pendingInCurrent && currentMod) {
+      return { lesson: pendingInCurrent, module: currentMod };
     }
-    // Caso o módulo atual esteja concluído, procura no próximo módulo desbloqueado
-    const nextMod = modules.find((m) => m.status === 'current' && m.id !== currentModule.id);
-    if (nextMod) {
-      const pendingInNext = nextMod.lessons.find((l) => !completedSet.has(l.id));
-      if (pendingInNext) {
-        return {
-          lesson: pendingInNext,
-          module: nextMod,
-        };
+
+    for (const mod of modules) {
+      const pending = mod.lessons.find((l) => !l.isCompleted);
+      if (pending) {
+        return { lesson: pending, module: mod };
       }
     }
-    // Fallback para a primeira lição do módulo atual
-    return {
-      lesson: currentModule.lessons[0],
-      module: currentModule,
-    };
-  })();
 
-  // Cálculo da porcentagem global de progresso da trilha
-  const progressPercent = Math.round(
-    (userState.completedModulesCount / (userState.totalModulesCount || 1)) * 100
-  );
+    const fallbackMod = modules[0];
+    return { lesson: fallbackMod.lessons[0], module: fallbackMod };
+  };
 
+  const nextPendingLesson = getNextPendingLesson();
+
+  // Abre modal com detalhes do módulo
   const handleSelectModule = (mod: LearningModule) => {
     setSelectedModule(mod);
   };
 
+  // Fecha modal de detalhes do módulo
   const closeModuleModal = () => {
     setSelectedModule(null);
   };
 
-  // Inicia uma lição interativa diretamente
+  // Inicia uma Quest interativa diretamente pelo ID
   const startLesson = (lessonId?: string) => {
-    let lesson: InteractiveLesson | null = null;
+    let quest: InteractiveLesson | null = null;
     const targetId = lessonId || nextPendingLesson.lesson.id;
     if (targetId) {
-      lesson = getLessonById(targetId);
+      quest = getQuestById(targetId) || null;
     }
-    if (!lesson) {
-      lesson = getFirstLessonOfModule(userState.currentModuleId || 'html-mod-1');
+    if (!quest) {
+      quest = getFirstQuestOfModule(userState.currentModuleId || 'html-mod-1') || null;
     }
 
-    if (lesson) {
-      setActiveLesson(lesson);
+    if (quest) {
+      setActiveLesson(quest);
       setSelectedModule(null); // Fecha modal caso esteja aberto
     }
   };
@@ -144,9 +169,10 @@ export function useLearningProgress() {
     setUserState((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }));
   };
 
-  // Reinicia o progresso com segurança
+  // Reinicia o progresso com segurança preservando o novo catálogo de currículo
   const resetProgress = () => {
-    const freshModules = HTML_BEGINNER_TRACK.map((m) => ({
+    const baseModules = getAllModules();
+    const freshModules = baseModules.map((m) => ({
       ...m,
       status: m.order === 1 ? ('current' as const) : ('locked' as const),
       lessons: m.lessons.map((l) => ({ ...l, isCompleted: false })),
@@ -155,10 +181,12 @@ export function useLearningProgress() {
       userName: userState.userName || 'Explorador',
       xp: 0,
       streakDays: 1,
-      totalModulesCount: HTML_BEGINNER_TRACK.length,
+      totalModulesCount: baseModules.length,
       completedModulesCount: 0,
+      currentEraId: 'era-descoberta',
       currentModuleId: 'html-mod-1',
       completedLessonIds: [],
+      completedQuestIds: [],
       avatarMood: 'happy',
       dailyLessonsGoal: 1,
       soundEnabled: true,
@@ -170,19 +198,22 @@ export function useLearningProgress() {
     setSelectedModule(null);
   };
 
-  // Sai da lição interativa e volta à trilha
+  // Sai da lição/quest interativa e volta à trilha
   const exitLesson = () => {
     setActiveLesson(null);
   };
 
-  // Conclui a lição com sucesso e calcula XP e desbloqueio
+  // Conclui a lição/quest com sucesso e calcula XP e desbloqueio
   const completeLesson = (lessonId: string, xpEarned: number) => {
-    // 1. Atualiza IDs de aulas completadas e XP do usuário
+    // 1. Atualiza IDs de aulas/quests completadas e XP do usuário
     const currentCompleted = userState.completedLessonIds || [];
     const isAlreadyCompleted = currentCompleted.includes(lessonId);
     const updatedCompletedLessonIds = isAlreadyCompleted
       ? currentCompleted
       : [...currentCompleted, lessonId];
+    const updatedCompletedQuestIds = userState.completedQuestIds?.includes(lessonId)
+      ? userState.completedQuestIds
+      : [...(userState.completedQuestIds || []), lessonId];
 
     const updatedXp = userState.xp + (isAlreadyCompleted ? 0 : xpEarned);
 
@@ -227,6 +258,7 @@ export function useLearningProgress() {
       ...prev,
       xp: updatedXp,
       completedLessonIds: updatedCompletedLessonIds,
+      completedQuestIds: updatedCompletedQuestIds,
       completedModulesCount: updatedCompletedModules,
       currentModuleId: nextCurrentModuleId,
     }));
@@ -236,18 +268,23 @@ export function useLearningProgress() {
   };
 
   return {
+    currentEra: getActiveEra(),
     modules,
     userState,
     currentModule,
     progressPercent,
     selectedModule,
     activeLesson,
+    activeQuest: activeLesson,
     nextPendingLesson,
     handleSelectModule,
     closeModuleModal,
     startLesson,
+    startQuest: startLesson,
     completeLesson,
+    completeQuest: completeLesson,
     exitLesson,
+    exitQuest: exitLesson,
     setUserState,
     updateUserName,
     updateAvatarMood,

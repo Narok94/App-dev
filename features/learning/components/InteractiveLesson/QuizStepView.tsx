@@ -1,6 +1,7 @@
 import React from 'react';
-import { Swords, Check, X, RotateCcw, ArrowRight, Zap, AlertCircle } from 'lucide-react';
+import { Swords, Check, X, RotateCcw, ArrowRight, Zap, AlertCircle, Code, ListOrdered, CheckCircle2 } from 'lucide-react';
 import { LessonStep, QuizOption } from '@/types/learning';
+import { CodeGrimoire } from './CodeGrimoire';
 
 interface QuizStepViewProps {
   step: LessonStep;
@@ -25,16 +26,63 @@ export function QuizStepView({
   onRetry,
   onNextStep,
 }: QuizStepViewProps) {
+  // Determina rótulo e ícone contextual conforme o tipo de Quest Step
+  const getStepTypeInfo = () => {
+    switch (step.type) {
+      case 'true_false':
+        return {
+          label: 'Verdadeiro ou Falso',
+          icon: <CheckCircle2 className="w-3 h-3 text-[#38BDF8]" />,
+          bg: 'rgba(56,189,248,0.12)',
+          color: '#38BDF8',
+        };
+      case 'code_completion':
+        return {
+          label: 'Completar Código',
+          icon: <Code className="w-3 h-3 text-[#C8F03D]" />,
+          bg: 'rgba(200,240,61,0.12)',
+          color: '#C8F03D',
+        };
+      case 'code_fix':
+        return {
+          label: 'Correção de Bug',
+          icon: <AlertCircle className="w-3 h-3 text-[#FF6B4A]" />,
+          bg: 'rgba(255,107,74,0.12)',
+          color: '#FF6B4A',
+        };
+      case 'ordering':
+        return {
+          label: 'Ordenação de Código',
+          icon: <ListOrdered className="w-3 h-3 text-[#8B7CF6]" />,
+          bg: 'rgba(139,124,246,0.12)',
+          color: '#8B7CF6',
+        };
+      default:
+        return {
+          label: 'Sua Missão na Quest',
+          icon: <Swords className="w-3 h-3 text-[#FF6B4A]" />,
+          bg: 'var(--coral-tint)',
+          color: 'var(--coral)',
+        };
+    }
+  };
+
+  const typeInfo = getStepTypeInfo();
+  const codeToDisplay = 
+    ('codeSnippetWithBlank' in step && step.codeSnippetWithBlank) ||
+    ('brokenCode' in step && step.brokenCode) ||
+    ('codeSnippet' in step && step.codeSnippet);
+
   return (
     <div className="w-full h-full flex flex-col justify-between gap-2.5 sm:gap-3">
       {/* Área Central: Card da Quest com Pergunta e Alternativas */}
       <div className="w-full flex-1 flex flex-col justify-center min-h-0 overflow-y-auto no-scrollbar py-0.5">
-        <div className="quest-card space-y-3 sm:space-y-4">
+        <div className="quest-card space-y-3 sm:space-y-3.5">
           {/* Tag de Desafio e XP em Jogo */}
           <div className="flex items-center justify-between">
-            <div className="tag" style={{ background: 'var(--coral-tint)', color: 'var(--coral)' }}>
-              <Swords className="w-3 h-3 text-[#FF6B4A]" />
-              <span>Sua Missão na Quest</span>
+            <div className="tag" style={{ background: typeInfo.bg, color: typeInfo.color }}>
+              {typeInfo.icon}
+              <span>{typeInfo.label}</span>
             </div>
 
             <span className="text-xs font-baloo font-bold text-[#8B7CF6] flex items-center gap-1">
@@ -47,6 +95,16 @@ export function QuizStepView({
             <h2 className="q-title text-base sm:text-lg text-[#F2F1EA] mb-1.5">{step.title}</h2>
             <p className="text-[14px] sm:text-[15px] font-medium text-[#E0E5F0] leading-snug">{step.question}</p>
           </div>
+
+          {/* Grimório de Código / Snippet do Desafio se houver */}
+          {codeToDisplay && (
+            <div className="py-0.5">
+              <CodeGrimoire
+                code={codeToDisplay}
+                fileName={step.type === 'code_fix' ? 'debug_index.html' : 'snippet.html'}
+              />
+            </div>
+          )}
 
           {/* Lista de Alternativas com Seleção Imediata e Dimensionalmente Estável */}
           <div className="options" role="radiogroup" aria-label="Alternativas da questão">
