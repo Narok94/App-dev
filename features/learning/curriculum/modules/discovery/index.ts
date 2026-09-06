@@ -1,0 +1,49 @@
+import { LearningModule, Quest } from '@/types/learning';
+import { MODULE_01_PRIMEIRO_CONTATO, MODULE_01_QUESTS } from './module01';
+import { MODULE_02_ESTRUTURA_MUNDO, MODULE_02_QUESTS } from './module02';
+import { MODULE_03_PALAVRAS_HISTORIAS, MODULE_03_QUESTS } from './module03';
+import { MODULE_04_PORTAIS_CONEXOES, MODULE_04_QUESTS } from './module04';
+import { MODULE_05_MUNDO_FORMA, MODULE_05_QUESTS } from './module05';
+import { MODULE_06_ORGANIZACAO, MODULE_06_QUESTS } from './module06';
+import { MODULE_07_ARQUITETURA_SEMANTICA, MODULE_07_QUESTS } from './module07';
+import { MODULE_08_DADOS_TABELAS, MODULE_08_QUESTS } from './module08';
+import { MODULE_09_FORMULARIOS, MODULE_09_QUESTS } from './module09';
+import { MODULE_10_INTERACAO_NATIVA, MODULE_10_QUESTS } from './module10';
+import { MODULE_11_HTML_PROFISSIONAL, MODULE_11_QUESTS } from './module11';
+import { MODULE_12_MUNDO_REAL, MODULE_12_QUESTS } from './module12';
+
+/**
+ * Catálogo completo de Módulos da Era da Descoberta (12 módulos estruturados e progressivos)
+ */
+export const DISCOVERY_MODULES: LearningModule[] = [
+  MODULE_01_PRIMEIRO_CONTATO,
+  MODULE_02_ESTRUTURA_MUNDO,
+  MODULE_03_PALAVRAS_HISTORIAS,
+  MODULE_04_PORTAIS_CONEXOES,
+  MODULE_05_MUNDO_FORMA,
+  MODULE_06_ORGANIZACAO,
+  MODULE_07_ARQUITETURA_SEMANTICA,
+  MODULE_08_DADOS_TABELAS,
+  MODULE_09_FORMULARIOS,
+  MODULE_10_INTERACAO_NATIVA,
+  MODULE_11_HTML_PROFISSIONAL,
+  MODULE_12_MUNDO_REAL,
+];
+
+/**
+ * Registro unificado de todas as Quests da Era da Descoberta
+ */
+export const DISCOVERY_QUESTS: Record<string, Quest> = {
+  ...MODULE_01_QUESTS,
+  ...MODULE_02_QUESTS,
+  ...MODULE_03_QUESTS,
+  ...MODULE_04_QUESTS,
+  ...MODULE_05_QUESTS,
+  ...MODULE_06_QUESTS,
+  ...MODULE_07_QUESTS,
+  ...MODULE_08_QUESTS,
+  ...MODULE_09_QUESTS,
+  ...MODULE_10_QUESTS,
+  ...MODULE_11_QUESTS,
+  ...MODULE_12_QUESTS,
+};

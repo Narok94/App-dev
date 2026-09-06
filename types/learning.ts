@@ -55,7 +55,21 @@ export interface LearningModule {
   description: string;
   status: ModuleStatus;
   xpReward: number;
-  iconName: 'flag' | 'code' | 'file-text' | 'link' | 'image' | 'list' | 'layout' | 'check-circle';
+  iconName:
+    | 'flag'
+    | 'code'
+    | 'file-text'
+    | 'link'
+    | 'image'
+    | 'list'
+    | 'layout'
+    | 'table'
+    | 'check-square'
+    | 'zap'
+    | 'award'
+    | 'sparkles'
+    | 'check-circle'
+    | string;
   lessons: LessonPreview[];
   quests?: LessonPreview[];
   estimatedMinutes: number;
@@ -135,6 +149,7 @@ export interface OrderingStep extends BaseQuestStep {
   items?: OrderingStepItem[];
   correctOrderIds?: string[];
   options?: QuizOption[];
+  codeSnippetWithBlank?: string;
 }
 
 export interface PracticalChallengeStep extends BaseQuestStep {
@@ -143,6 +158,8 @@ export interface PracticalChallengeStep extends BaseQuestStep {
   starterCode?: string;
   expectedOutput?: string;
   options?: QuizOption[];
+  codeSnippetWithBlank?: string;
+  correctAnswer?: string;
 }
 
 export type QuestStep =

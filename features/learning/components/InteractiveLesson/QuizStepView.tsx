@@ -57,6 +57,13 @@ export function QuizStepView({
           bg: 'rgba(139,124,246,0.12)',
           color: '#8B7CF6',
         };
+      case 'practical_challenge':
+        return {
+          label: 'Desafio Prático',
+          icon: <Code className="w-3 h-3 text-[#C8F03D]" />,
+          bg: 'rgba(200,240,61,0.12)',
+          color: '#C8F03D',
+        };
       default:
         return {
           label: 'Sua Missão na Quest',
@@ -71,6 +78,7 @@ export function QuizStepView({
   const codeToDisplay = 
     ('codeSnippetWithBlank' in step && step.codeSnippetWithBlank) ||
     ('brokenCode' in step && step.brokenCode) ||
+    ('starterCode' in step && (step as any).starterCode) ||
     ('codeSnippet' in step && step.codeSnippet);
 
   return (

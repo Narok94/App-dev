@@ -46,7 +46,7 @@ export function ModuleBottomSheet({
                   {isLocked ? 'Bloqueado' : module.status === 'completed' ? 'Concluído' : 'Em Andamento'}
                 </Badge>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#38BDF8]">
-                  Módulo 0{module.order}
+                  Módulo {String(module.order).padStart(2, '0')}
                 </span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-[#F8FAFC] tracking-tight">

@@ -1,30 +1,17 @@
 import { Era, LearningModule, Quest } from '@/types/learning';
 import { ERAS_CATALOG } from './eras';
-import { MODULE_01_PRIMEIRO_CONTATO, MODULE_01_QUESTS } from './modules/discovery/module01';
-import { HTML_BEGINNER_TRACK } from '../data/htmlCurriculum';
+import { DISCOVERY_MODULES, DISCOVERY_QUESTS } from './modules/discovery';
 import { HTML_MODULE_01_LESSONS } from '../data/htmlLessonsData';
-
-/**
- * Módulos registrados da Era da Descoberta (HTML)
- */
-const DISCOVERY_MODULES: LearningModule[] = [
-  MODULE_01_PRIMEIRO_CONTATO,
-  // Mantém módulos seguintes do HTML_BEGINNER_TRACK para visualização de trilha e compatibilidade
-  ...HTML_BEGINNER_TRACK.filter((m) => m.id !== 'html-mod-1').map((m) => ({
-    ...m,
-    eraId: 'era-descoberta',
-  })),
-];
 
 /**
  * Registro de todas as Quests do ecossistema
  */
 const QUESTS_REGISTRY: Record<string, Quest> = {
-  ...MODULE_01_QUESTS,
+  ...DISCOVERY_QUESTS,
   // Mapeia IDs legados para as novas Quests da arquitetura piloto
-  'les-1-1': MODULE_01_QUESTS['quest-html-1-1'],
-  'les-1-2': MODULE_01_QUESTS['quest-html-1-2'],
-  'les-1-3': MODULE_01_QUESTS['quest-html-1-3'],
+  'les-1-1': DISCOVERY_QUESTS['quest-html-1-1'],
+  'les-1-2': DISCOVERY_QUESTS['quest-html-1-2'],
+  'les-1-3': DISCOVERY_QUESTS['quest-html-1-3'],
 };
 
 /**
