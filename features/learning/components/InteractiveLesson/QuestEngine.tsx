@@ -6,6 +6,9 @@ import { QuestVictoryView } from './QuestVictoryView';
 
 export interface QuestEngineProps {
   quest: Quest;
+  userXp: number;
+  onAwardXp: (amount: number) => void;
+  onPenalizeXp: (penalty?: number) => void;
   onComplete: (questId: string, xpEarned: number) => void;
   onExit: () => void;
 }
@@ -15,18 +18,28 @@ export interface QuestEngineProps {
  * Controla:
  * - Sequência ordenada de etapas (concept, multiple_choice, true_false, code_completion, code_fix, etc.)
  * - Seleção de respostas e interações
- * - Feedback contextual imediato
- * - Gamificação e acúmulo de XP
+ * - Feedback contextual imediato (+X XP / -5 XP)
+ * - Concessão atômica de XP e penalidade de 5 XP com piso zero
+ * - Prevenção de duplicação de XP por etapa
  * - Transição fluida e tela de vitória da Missão
  */
-export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
+export function QuestEngine({
+  quest,
+  userXp,
+  onAwardXp,
+  onPenalizeXp,
+  onComplete,
+  onExit,
+}: QuestEngineProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [accumulatedXp, setAccumulatedXp] = useState(0);
+  const [rewardedStepIds, setRewardedStepIds] = useState<string[]>([]);
+  const [sessionNetXp, setSessionNetXp] = useState(0);
   const [isQuestFinished, setIsQuestFinished] = useState(false);
   const [isFlashing, setIsFlashing] = useState(false);
+  const [xpDelta, setXpDelta] = useState<{ amount: number; type: 'gain' | 'loss'; id: number } | null>(null);
 
   const currentStep: QuestStep = quest.steps[currentStepIndex];
   const isLastStep = currentStepIndex === quest.steps.length - 1;
@@ -37,7 +50,7 @@ export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
     setSelectedOptionId(optionId);
   };
 
-  // Verifica resposta de etapas interativas
+  // Verifica resposta de etapas interativas com concessão imediata de XP ou penalidade de 5 XP
   const handleCheckAnswer = () => {
     if (!selectedOptionId || !currentStep.options) return;
 
@@ -48,23 +61,63 @@ export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
     setIsAnswerChecked(true);
 
     if (correct) {
-      setAccumulatedXp((prev) => prev + currentStep.xpReward);
+      // Concede XP da etapa apenas uma vez para esta resolução correta
+      if (!rewardedStepIds.includes(currentStep.id)) {
+        const reward = currentStep.xpReward || 0;
+        if (reward > 0) {
+          onAwardXp(reward);
+          setRewardedStepIds((prev) => [...prev, currentStep.id]);
+          setSessionNetXp((prev) => prev + reward);
+        }
+      }
+      setXpDelta({
+        amount: currentStep.xpReward || 0,
+        type: 'gain',
+        id: Date.now(),
+      });
       setIsFlashing(true);
-      setTimeout(() => setIsFlashing(false), 500);
+      setTimeout(() => setIsFlashing(false), 600);
+    } else {
+      // Desconta exatamente 5 XP a cada resposta incorreta, nunca abaixo de 0
+      onPenalizeXp(5);
+      setSessionNetXp((prev) => Math.max(0, prev - 5));
+      setXpDelta({
+        amount: 5,
+        type: 'loss',
+        id: Date.now(),
+      });
+      setIsFlashing(true);
+      setTimeout(() => setIsFlashing(false), 600);
     }
   };
 
-  // Permite tentar novamente após erro
+  // Permite tentar novamente após erro, mantendo o histórico de penalidades
   const handleRetry = () => {
     setSelectedOptionId(null);
     setIsAnswerChecked(false);
     setIsCorrect(false);
+    setXpDelta(null);
   };
 
   // Avança para a próxima etapa da quest
   const handleNextStep = () => {
+    // Concede XP de conceitos informativos ao avançar, se ainda não concedido
     if (currentStep.type === 'concept') {
-      setAccumulatedXp((prev) => prev + currentStep.xpReward);
+      if (!rewardedStepIds.includes(currentStep.id)) {
+        const reward = currentStep.xpReward || 0;
+        if (reward > 0) {
+          onAwardXp(reward);
+          setRewardedStepIds((prev) => [...prev, currentStep.id]);
+          setSessionNetXp((prev) => prev + reward);
+          setXpDelta({
+            amount: reward,
+            type: 'gain',
+            id: Date.now(),
+          });
+          setIsFlashing(true);
+          setTimeout(() => setIsFlashing(false), 600);
+        }
+      }
     }
 
     if (isLastStep) {
@@ -74,18 +127,18 @@ export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
       setSelectedOptionId(null);
       setIsAnswerChecked(false);
       setIsCorrect(false);
+      setXpDelta(null);
     }
   };
 
-  // Conclui a Quest com sucesso e consolida progresso
+  // Conclui a Quest com sucesso e consolida progresso sem duplicar XP
   const handleFinalContinue = () => {
-    const finalXp = accumulatedXp > 0 ? accumulatedXp : quest.totalXp;
-    onComplete(quest.id, finalXp);
+    onComplete(quest.id, sessionNetXp);
   };
 
   // TELA DE CONCLUSÃO / VITÓRIA NA QUEST
   if (isQuestFinished) {
-    const finalXp = accumulatedXp > 0 ? accumulatedXp : quest.totalXp;
+    const finalXp = sessionNetXp > 0 ? sessionNetXp : quest.totalXp;
 
     return (
       <div
@@ -117,7 +170,7 @@ export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
         paddingRight: 'var(--lesson-padding-x)',
       }}
     >
-      {/* Topo da Quest: Saída, Título, Etapa e Barra Segmentada */}
+      {/* Topo da Quest: Saída, Título, Etapa, XP em Tempo Real e Barra Segmentada */}
       <div className="w-full shrink-0">
         <QuestHeader
           moduleTitle={quest.moduleTitle}
@@ -125,6 +178,8 @@ export function QuestEngine({ quest, onComplete, onExit }: QuestEngineProps) {
           currentStepIndex={currentStepIndex}
           steps={quest.steps}
           totalXp={quest.totalXp}
+          userXp={userXp}
+          xpDelta={xpDelta}
           isFlashing={isFlashing}
           onExit={onExit}
         />

@@ -8,6 +8,8 @@ interface QuestHeaderProps {
   currentStepIndex: number;
   steps: LessonStep[];
   totalXp: number;
+  userXp?: number;
+  xpDelta?: { amount: number; type: 'gain' | 'loss'; id: number } | null;
   isFlashing: boolean;
   onExit: () => void;
 }
@@ -18,6 +20,8 @@ export function QuestHeader({
   currentStepIndex,
   steps,
   totalXp,
+  userXp,
+  xpDelta,
   isFlashing,
   onExit,
 }: QuestHeaderProps) {
@@ -62,10 +66,35 @@ export function QuestHeader({
           </div>
         </div>
 
-        {/* Recompensa XP da Quest */}
-        <div className="h-10 px-3 rounded-2xl bg-[#1B1F2E] border border-[#2C3247] flex items-center gap-1.5 text-xs font-baloo font-bold text-[#C8F03D] shadow-[0_0_15px_rgba(200,240,61,0.12)] shrink-0 select-none">
-          <Zap className="w-3.5 h-3.5 fill-[#C8F03D]" />
-          <span>+{totalXp} XP</span>
+        {/* Total XP em tempo real do aluno com indicador dinâmico */}
+        <div
+          className={`h-10 px-3 rounded-2xl bg-[#1B1F2E] border flex items-center gap-1.5 text-xs font-baloo font-bold transition-all duration-300 shrink-0 select-none ${
+            xpDelta?.type === 'gain'
+              ? 'border-[#C8F03D] text-[#C8F03D] shadow-[0_0_16px_rgba(200,240,61,0.35)] scale-105'
+              : xpDelta?.type === 'loss'
+              ? 'border-[#FF6B4A] text-[#FF6B4A] shadow-[0_0_16px_rgba(255,107,74,0.35)] scale-105'
+              : 'border-[#2C3247] text-[#C8F03D] shadow-[0_0_15px_rgba(200,240,61,0.12)]'
+          }`}
+          title={`${userXp ?? totalXp} XP acumulados no seu progresso`}
+        >
+          <Zap
+            className={`w-3.5 h-3.5 ${
+              xpDelta?.type === 'loss' ? 'fill-[#FF6B4A]' : 'fill-[#C8F03D]'
+            }`}
+          />
+          <span>{userXp ?? totalXp} XP</span>
+          {xpDelta && (
+            <span
+              key={xpDelta.id}
+              className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                xpDelta.type === 'gain'
+                  ? 'bg-[#C8F03D]/25 text-[#C8F03D] animate-pulse'
+                  : 'bg-[#FF6B4A]/25 text-[#FF6B4A] animate-pulse'
+              }`}
+            >
+              {xpDelta.type === 'gain' ? `+${xpDelta.amount}` : `-${xpDelta.amount}`}
+            </span>
+          )}
         </div>
       </div>
 

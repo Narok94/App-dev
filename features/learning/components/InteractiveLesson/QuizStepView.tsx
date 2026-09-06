@@ -191,9 +191,13 @@ export function QuizStepView({
                 )}
               </div>
 
-              {isCorrect && (
-                <span className="px-2 py-0.5 rounded-full bg-[#C8F03D]/20 text-[11px] font-baloo font-bold text-[#C8F03D] flex items-center gap-1">
+              {isCorrect ? (
+                <span className="px-2 py-0.5 rounded-full bg-[#C8F03D]/20 text-[11px] font-baloo font-bold text-[#C8F03D] flex items-center gap-1 shrink-0">
                   <Zap className="w-3 h-3 fill-[#C8F03D]" /> +{step.xpReward} XP
+                </span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-[#FF6B4A]/20 text-[11px] font-baloo font-bold text-[#FF6B4A] flex items-center gap-1 shrink-0">
+                  <Zap className="w-3 h-3 fill-[#FF6B4A]" /> -5 XP
                 </span>
               )}
             </div>

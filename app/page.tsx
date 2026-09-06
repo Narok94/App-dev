@@ -29,6 +29,8 @@ export default function AppPage() {
     updateAvatarMood,
     toggleSound,
     resetProgress,
+    awardStepXp,
+    penalizeStepXp,
   } = useLearningProgress();
 
   // Ação direta: "Continuar aprendendo" abre imediatamente a próxima lição pendente!
@@ -47,6 +49,9 @@ export default function AppPage() {
         <div className="w-full max-w-[440px] h-full flex flex-col">
           <LessonPlayer
             lesson={activeLesson}
+            userXp={userState.xp}
+            onAwardXp={awardStepXp}
+            onPenalizeXp={penalizeStepXp}
             onComplete={completeLesson}
             onExit={exitLesson}
           />

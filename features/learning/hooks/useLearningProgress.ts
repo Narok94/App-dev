@@ -198,14 +198,57 @@ export function useLearningProgress() {
     setSelectedModule(null);
   };
 
+  // Concede XP de uma etapa da quest de forma atômica e persistente
+  const awardStepXp = (amount: number) => {
+    if (amount <= 0) return;
+    setUserState((prev) => {
+      const nextXp = prev.xp + amount;
+      const nextState = { ...prev, xp: nextXp };
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+        } catch (e) {
+          console.warn('Erro ao salvar XP no localStorage:', e);
+        }
+      }
+      return nextState;
+    });
+  };
+
+  // Penaliza com desconto exato de XP (padrão 5 XP), nunca ficando abaixo de 0
+  const penalizeStepXp = (penalty: number = 5) => {
+    const penaltyAmount = Math.abs(penalty);
+    setUserState((prev) => {
+      const nextXp = Math.max(0, prev.xp - penaltyAmount);
+      const nextState = { ...prev, xp: nextXp };
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+        } catch (e) {
+          console.warn('Erro ao salvar XP no localStorage:', e);
+        }
+      }
+      return nextState;
+    });
+  };
+
+  // Permite ajuste arbitrário de XP garantindo nunca ser negativo
+  const addXp = (amount: number) => {
+    if (amount > 0) {
+      awardStepXp(amount);
+    } else if (amount < 0) {
+      penalizeStepXp(Math.abs(amount));
+    }
+  };
+
   // Sai da lição/quest interativa e volta à trilha
   const exitLesson = () => {
     setActiveLesson(null);
   };
 
-  // Conclui a lição/quest com sucesso e calcula XP e desbloqueio
-  const completeLesson = (lessonId: string, xpEarned: number) => {
-    // 1. Atualiza IDs de aulas/quests completadas e XP do usuário
+  // Conclui a lição/quest com sucesso e calcula desbloqueios sem duplicar XP
+  const completeLesson = (lessonId: string, _xpEarned?: number) => {
+    // 1. Atualiza IDs de aulas/quests completadas
     const currentCompleted = userState.completedLessonIds || [];
     const isAlreadyCompleted = currentCompleted.includes(lessonId);
     const updatedCompletedLessonIds = isAlreadyCompleted
@@ -214,8 +257,6 @@ export function useLearningProgress() {
     const updatedCompletedQuestIds = userState.completedQuestIds?.includes(lessonId)
       ? userState.completedQuestIds
       : [...(userState.completedQuestIds || []), lessonId];
-
-    const updatedXp = userState.xp + (isAlreadyCompleted ? 0 : xpEarned);
 
     // 2. Atualiza a lista de módulos marcando a aula
     let updatedCompletedModules = userState.completedModulesCount;
@@ -254,14 +295,25 @@ export function useLearningProgress() {
     }
 
     setModules(updatedModules);
-    setUserState((prev) => ({
-      ...prev,
-      xp: updatedXp,
-      completedLessonIds: updatedCompletedLessonIds,
-      completedQuestIds: updatedCompletedQuestIds,
-      completedModulesCount: updatedCompletedModules,
-      currentModuleId: nextCurrentModuleId,
-    }));
+    // Preserva o XP atual (única fonte de verdade atualizada em tempo real)
+    setUserState((prev) => {
+      const nextState = {
+        ...prev,
+        completedLessonIds: updatedCompletedLessonIds,
+        completedQuestIds: updatedCompletedQuestIds,
+        completedModulesCount: updatedCompletedModules,
+        currentModuleId: nextCurrentModuleId,
+      };
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+          localStorage.setItem(`${STORAGE_KEY}_modules`, JSON.stringify(updatedModules));
+        } catch (e) {
+          console.warn('Erro ao salvar progresso no localStorage:', e);
+        }
+      }
+      return nextState;
+    });
 
     // Fecha o player da lição e volta para a tela de aprendizado
     setActiveLesson(null);
@@ -290,5 +342,8 @@ export function useLearningProgress() {
     updateAvatarMood,
     toggleSound,
     resetProgress,
+    awardStepXp,
+    penalizeStepXp,
+    addXp,
   };
 }
