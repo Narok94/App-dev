@@ -94,7 +94,7 @@ export function ProfileSettingsModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-[#F8FAFC]">Perfil & Configurações Dev</h2>
-              <p className="text-xs text-[#94A3B8]">Personalize seus parâmetros no Tatu</p>
+              <p className="text-xs text-[#94A3B8]">Personalize seus parâmetros no App-dev</p>
             </div>
           </div>
           <button

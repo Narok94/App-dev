@@ -43,8 +43,8 @@ export default function AppPage() {
   // Se houver uma lição ativa, exibe o player interativo da lição
   if (activeLesson) {
     return (
-      <div className="min-h-screen bg-[#12151F] text-[#F2F1EA] flex flex-col items-center px-4 pt-6 pb-20 selection:bg-[#C8F03D] selection:text-[#12151F]">
-        <div className="w-full max-w-[420px]">
+      <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#12151F] text-[#F2F1EA] flex flex-col items-center justify-center overflow-hidden selection:bg-[#C8F03D] selection:text-[#12151F]">
+        <div className="w-full max-w-[440px] h-full flex flex-col">
           <LessonPlayer
             lesson={activeLesson}
             onComplete={completeLesson}

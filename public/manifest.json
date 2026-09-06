@@ -1,14 +1,14 @@
 {
   "id": "/",
-  "name": "Tatu - Aprenda no Seu Ritmo",
-  "short_name": "Tatu",
-  "description": "Aplicativo de aprendizado prático com o mascote Tatu, trilha visual de HTML para iniciantes.",
+  "name": "App-dev",
+  "short_name": "App-dev",
+  "description": "Aplicativo de aprendizado prático e interativo de desenvolvimento web.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#F7F5F0",
-  "theme_color": "#2D4A3E",
+  "background_color": "#12151F",
+  "theme_color": "#12151F",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -21,6 +21,11 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

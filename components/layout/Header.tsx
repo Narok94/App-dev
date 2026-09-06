@@ -1,4 +1,5 @@
 import React from 'react';
+import { AppDevIcon } from '@/components/ui/AppDevIcon';
 
 interface HeaderProps {
   xp?: number;
@@ -19,11 +20,13 @@ export function Header({
         <button
           type="button"
           onClick={onOpenProfile}
-          className="brand bg-transparent border-0 cursor-pointer p-0 text-left"
+          className="brand bg-transparent border-0 cursor-pointer p-0 text-left flex items-center gap-2.5"
           title="Ver perfil e configurações"
         >
-          <div className="mascot">&lt;/&gt;</div>
-          <span className="brand-name">tatu</span>
+          <div className="mascot p-1 flex items-center justify-center">
+            <AppDevIcon size={28} />
+          </div>
+          <span className="brand-name">App-dev</span>
         </button>
 
         <div className="pill-row">
