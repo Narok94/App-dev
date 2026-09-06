@@ -128,7 +128,7 @@ export function QuizStepView({
                 ) : (
                   <>
                     <AlertCircle className="w-4 h-4 text-[#FF6B4A]" />
-                    <span>Tentativa Bloqueada 🛡️</span>
+                    <span>Missão Falhada ⚔️</span>
                   </>
                 )}
               </div>
