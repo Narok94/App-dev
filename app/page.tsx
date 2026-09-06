@@ -56,7 +56,15 @@ export default function AppPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#12151F] text-[#F2F1EA] flex flex-col items-center px-4 pt-8 pb-20 selection:bg-[#C8F03D] selection:text-[#12151F]">
+    <div
+      className="min-h-screen bg-[#12151F] text-[#F2F1EA] flex flex-col items-center selection:bg-[#C8F03D] selection:text-[#12151F]"
+      style={{
+        paddingTop: 'var(--page-padding-top)',
+        paddingBottom: 'var(--page-padding-bottom)',
+        paddingLeft: 'max(16px, calc(env(safe-area-inset-left, 0px) + 16px))',
+        paddingRight: 'max(16px, calc(env(safe-area-inset-right, 0px) + 16px))',
+      }}
+    >
       {/* Screen container: max-w: 420px, gap: 18px */}
       <div className="tatu-screen w-full max-w-[420px] flex flex-col gap-[18px]">
         {/* Topbar com logo e pílulas de streak e XP */}

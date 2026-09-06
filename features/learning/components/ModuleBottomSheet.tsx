@@ -30,7 +30,7 @@ export function ModuleBottomSheet({
         role="dialog"
         aria-modal="true"
         aria-label={`Detalhes do ${module.title}`}
-        className="relative z-10 w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-[#0F172A] border border-[#1E293B] shadow-2xl overflow-hidden max-h-[88vh] flex flex-col animate-in slide-in-from-bottom duration-300"
+        className="relative z-10 w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-[#0F172A] border border-[#1E293B] shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col animate-in slide-in-from-bottom duration-300"
       >
         {/* Mobile drag handle */}
         <div className="sm:hidden w-full flex justify-center pt-3 pb-1">
@@ -160,7 +160,12 @@ export function ModuleBottomSheet({
 
         {/* Action button at bottom if not locked */}
         {!isLocked && (
-          <div className="p-4 border-t border-[#1E293B] bg-[#0A0E1A]">
+          <div 
+            className="p-4 border-t border-[#1E293B] bg-[#0A0E1A]"
+            style={{
+              paddingBottom: 'max(16px, calc(env(safe-area-inset-bottom, 0px) + 12px))',
+            }}
+          >
             <button
               onClick={() => onStartLesson(module.lessons[0].id)}
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#3B82F6] hover:to-[#2563EB] text-white text-sm font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all active:scale-[0.98] cursor-pointer"

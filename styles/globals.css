@@ -27,6 +27,21 @@
   --color-electric-400: #60A5FA;
   --color-border: #2C3247;
   --color-border-subtle: #1E2436;
+
+  /* Safe Area Variables para iOS e Android com respiro visual ergonômico */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
+  /* Espaçamento vertical estrutural da página principal (Dashboard) */
+  --page-padding-top: max(22px, calc(var(--sat) + 16px));
+  --page-padding-bottom: max(32px, calc(var(--sab) + 32px));
+
+  /* Espaçamento vertical e horizontal estrutural das lições (LessonPlayer) */
+  --lesson-padding-top: max(16px, calc(var(--sat) + 14px));
+  --lesson-padding-bottom: max(16px, calc(var(--sab) + 14px));
+  --lesson-padding-x: max(16px, calc(var(--sal) + 16px));
 }
 
 body {

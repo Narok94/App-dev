@@ -79,7 +79,7 @@ export function ProfileSettingsModal({
         role="dialog"
         aria-modal="true"
         aria-label="Perfil e Configurações"
-        className="relative z-10 w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-[#0F172A] border border-[#1E293B] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in slide-in-from-bottom duration-300"
+        className="relative z-10 w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-[#0F172A] border border-[#1E293B] shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col animate-in slide-in-from-bottom duration-300"
       >
         {/* Mobile handle para deslizar */}
         <div className="sm:hidden w-full flex justify-center pt-3 pb-1">
@@ -322,9 +322,14 @@ export function ProfileSettingsModal({
           </div>
         </div>
 
-        {/* Footer info */}
-        <div className="px-6 py-3 border-t border-[#1E293B] bg-[#070B14] flex items-center justify-between text-[11px] text-[#64748B]">
-          <span>Tatu v2.0 &bull; Trilha Web</span>
+        {/* Footer info com Safe Area Bottom */}
+        <div 
+          className="px-6 py-3 border-t border-[#1E293B] bg-[#070B14] flex items-center justify-between text-[11px] text-[#64748B]"
+          style={{
+            paddingBottom: 'max(12px, calc(env(safe-area-inset-bottom, 0px) + 8px))',
+          }}
+        >
+          <span>App-dev v2.0 &bull; Trilha Web</span>
           <span className="font-semibold text-[#38BDF8]">Tecnologia & Programação</span>
         </div>
       </div>

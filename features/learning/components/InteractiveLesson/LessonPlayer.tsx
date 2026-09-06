@@ -80,7 +80,15 @@ export function LessonPlayer({ lesson, onComplete, onExit }: LessonPlayerProps) 
     const finalXp = accumulatedXp > 0 ? accumulatedXp : lesson.totalXp;
 
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center px-3.5 sm:px-4 pt-[max(10px,env(safe-area-inset-top))] pb-[max(12px,env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar">
+      <div
+        className="w-full h-full flex flex-col items-center justify-center overflow-y-auto no-scrollbar"
+        style={{
+          paddingTop: 'var(--lesson-padding-top)',
+          paddingBottom: 'var(--lesson-padding-bottom)',
+          paddingLeft: 'var(--lesson-padding-x)',
+          paddingRight: 'var(--lesson-padding-x)',
+        }}
+      >
         <QuestVictoryView
           lesson={lesson}
           finalXp={finalXp}
@@ -92,7 +100,15 @@ export function LessonPlayer({ lesson, onComplete, onExit }: LessonPlayerProps) 
 
   // TELA DA LIÇÃO EM ANDAMENTO (CONCEITO OU DESAFIO DE MÚLTIPLA ESCOLHA)
   return (
-    <div className="w-full h-full flex flex-col justify-between px-3.5 sm:px-4 pt-[max(10px,env(safe-area-inset-top))] pb-[max(12px,env(safe-area-inset-bottom))] gap-2.5 sm:gap-3 overflow-hidden select-none">
+    <div
+      className="w-full h-full flex flex-col justify-between gap-2.5 sm:gap-3 overflow-hidden select-none"
+      style={{
+        paddingTop: 'var(--lesson-padding-top)',
+        paddingBottom: 'var(--lesson-padding-bottom)',
+        paddingLeft: 'var(--lesson-padding-x)',
+        paddingRight: 'var(--lesson-padding-x)',
+      }}
+    >
       {/* Topo da Quest: Saída, Título, Etapa e Barra Segmentada */}
       <div className="w-full shrink-0">
         <QuestHeader
