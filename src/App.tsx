@@ -5,12 +5,15 @@
 
 import RootLayout from '@/app/layout';
 import HomePage from '@/app/page';
+import { ErrorBoundary } from '@/components/common/ErrorBoundary';
 
 export default function App() {
   return (
-    <RootLayout>
-      <HomePage />
-    </RootLayout>
+    <ErrorBoundary>
+      <RootLayout>
+        <HomePage />
+      </RootLayout>
+    </ErrorBoundary>
   );
 }
 

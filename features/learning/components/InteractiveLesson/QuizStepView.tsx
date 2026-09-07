@@ -78,7 +78,9 @@ export function QuizStepView({
   const codeToDisplay = 
     ('codeSnippetWithBlank' in step && step.codeSnippetWithBlank) ||
     ('brokenCode' in step && step.brokenCode) ||
-    ('starterCode' in step && (step as any).starterCode) ||
+    ('starterCode' in step && typeof (step as { starterCode?: unknown }).starterCode === 'string'
+      ? (step as { starterCode: string }).starterCode
+      : undefined) ||
     ('codeSnippet' in step && step.codeSnippet);
 
   return (

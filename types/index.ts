@@ -5,6 +5,7 @@
 export * from './database';
 export * from './pwa';
 export * from './learning';
+export * from './auth';
 
 export interface ArchitectureModule {
   id: string;

@@ -6,6 +6,9 @@ import {
   getFirstQuestOfModule,
   getActiveEra,
 } from '../curriculum';
+import { validateUserState, validateLearningModules, isValidXp } from '@/utils/validation';
+import { sanitizeUserName } from '@/utils/sanitize';
+import { logger } from '@/utils/logger';
 
 const STORAGE_KEY = 'tatu_learning_progress_v2';
 
@@ -20,50 +23,20 @@ export function useLearningProgress() {
       try {
         const saved = localStorage.getItem(`${STORAGE_KEY}_modules`);
         if (saved) {
-          const parsed = JSON.parse(saved) as LearningModule[];
-          // Mescla com a definição de currículo atual para preservar progresso do aluno
-          return baseModules.map((baseMod) => {
-            const savedMod = parsed.find((p) => p.id === baseMod.id);
-            if (!savedMod) return baseMod;
-            return {
-              ...baseMod,
-              status: savedMod.status,
-              lessons: baseMod.lessons.map((baseLesson) => {
-                const savedLesson = savedMod.lessons.find((l) => l.id === baseLesson.id);
-                return {
-                  ...baseLesson,
-                  isCompleted: savedLesson ? Boolean(savedLesson.isCompleted) : false,
-                };
-              }),
-            };
-          });
+          const parsed = JSON.parse(saved);
+          return validateLearningModules(parsed, baseModules);
         }
       } catch (e) {
-        console.warn('Erro ao carregar módulos do localStorage:', e);
+        logger.warn('Falha ao restaurar módulos do armazenamento local.', 'useLearningProgress', e);
       }
     }
     return baseModules;
   });
 
-  // Carrega estado do usuário
+  // Carrega estado do usuário com validação estrita de schema
   const [userState, setUserState] = useState<UserLearningState>(() => {
     const baseModules = getAllModules();
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          return {
-            ...parsed,
-            currentEraId: parsed.currentEraId || 'era-descoberta',
-          };
-        }
-      } catch (e) {
-        console.warn('Erro ao carregar progresso do localStorage:', e);
-      }
-    }
-    // Estado inicial padrão com Módulo 01 pronto para ser explorado na Era da Descoberta
-    return {
+    const defaultState: UserLearningState = {
       userName: 'Explorador',
       xp: 0,
       streakDays: 1,
@@ -78,6 +51,19 @@ export function useLearningProgress() {
       soundEnabled: true,
       hapticEnabled: true,
     };
+
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return validateUserState(parsed, defaultState);
+        }
+      } catch (e) {
+        logger.warn('Falha ao restaurar estado do usuário do armazenamento local.', 'useLearningProgress', e);
+      }
+    }
+    return defaultState;
   });
 
   // Salva no localStorage quando o progresso muda
@@ -87,7 +73,7 @@ export function useLearningProgress() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(userState));
         localStorage.setItem(`${STORAGE_KEY}_modules`, JSON.stringify(modules));
       } catch (e) {
-        console.warn('Erro ao salvar progresso no localStorage:', e);
+        logger.warn('Falha ao persistir estado no armazenamento local.', 'useLearningProgress', e);
       }
     }
   }, [userState, modules]);
@@ -151,11 +137,11 @@ export function useLearningProgress() {
     }
   };
 
-  // Atualiza nome do usuário
+  // Atualiza nome do usuário com sanitização estrita contra XSS e injeções
   const updateUserName = (name: string) => {
-    const trimmed = name.trim();
-    if (trimmed) {
-      setUserState((prev) => ({ ...prev, userName: trimmed }));
+    const sanitized = sanitizeUserName(name, userState.userName);
+    if (sanitized) {
+      setUserState((prev) => ({ ...prev, userName: sanitized }));
     }
   };
 
@@ -200,15 +186,15 @@ export function useLearningProgress() {
 
   // Concede XP de uma etapa da quest de forma atômica e persistente
   const awardStepXp = (amount: number) => {
-    if (amount <= 0) return;
+    if (!isValidXp(amount) || amount <= 0) return;
     setUserState((prev) => {
-      const nextXp = prev.xp + amount;
+      const nextXp = Math.min(10_000_000, prev.xp + amount);
       const nextState = { ...prev, xp: nextXp };
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
         } catch (e) {
-          console.warn('Erro ao salvar XP no localStorage:', e);
+          logger.warn('Falha ao registrar XP.', 'useLearningProgress', e);
         }
       }
       return nextState;
@@ -218,6 +204,7 @@ export function useLearningProgress() {
   // Penaliza com desconto exato de XP (padrão 5 XP), nunca ficando abaixo de 0
   const penalizeStepXp = (penalty: number = 5) => {
     const penaltyAmount = Math.abs(penalty);
+    if (!Number.isFinite(penaltyAmount)) return;
     setUserState((prev) => {
       const nextXp = Math.max(0, prev.xp - penaltyAmount);
       const nextState = { ...prev, xp: nextXp };
@@ -225,7 +212,7 @@ export function useLearningProgress() {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
         } catch (e) {
-          console.warn('Erro ao salvar XP no localStorage:', e);
+          logger.warn('Falha ao registrar penalidade de XP.', 'useLearningProgress', e);
         }
       }
       return nextState;
@@ -309,7 +296,7 @@ export function useLearningProgress() {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
           localStorage.setItem(`${STORAGE_KEY}_modules`, JSON.stringify(updatedModules));
         } catch (e) {
-          console.warn('Erro ao salvar progresso no localStorage:', e);
+          logger.warn('Falha ao persistir conclusão de aula no armazenamento local.', 'useLearningProgress', e);
         }
       }
       return nextState;

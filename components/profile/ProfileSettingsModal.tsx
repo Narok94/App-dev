@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { UserLearningState } from '@/types/learning';
 import { Badge } from '@/components/ui/Badge';
+import { sanitizeUserName } from '@/utils/sanitize';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
@@ -46,8 +47,10 @@ export function ProfileSettingsModal({
 
   const handleSaveName = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingName.trim()) {
-      onUpdateName(editingName.trim());
+    const sanitized = sanitizeUserName(editingName, userState.userName);
+    if (sanitized) {
+      onUpdateName(sanitized);
+      setEditingName(sanitized);
       setIsEditing(false);
     }
   };
