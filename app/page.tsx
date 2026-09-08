@@ -65,7 +65,7 @@ export default function AppPage() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
+            transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             className="h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden relative"
           >
             <div className="w-full max-w-[440px] h-full flex flex-col">
@@ -93,7 +93,7 @@ export default function AppPage() {
             initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="w-full min-h-screen min-h-[100dvh] flex flex-col items-center"
             style={{
               paddingTop: 'var(--page-padding-top)',
@@ -118,15 +118,10 @@ export default function AppPage() {
                 userState={userState}
                 modules={modules}
                 currentModule={currentModule}
-                progressPercent={progressPercent}
                 levelProgress={levelProgress}
                 nextPendingLesson={nextPendingLesson}
                 onContinueLearning={handleContinueLearning}
                 onSelectModule={handleSelectModule}
-                onStartLesson={(lessonId) => {
-                  closeModuleModal();
-                  startLesson(lessonId);
-                }}
               />
 
               <Footer />

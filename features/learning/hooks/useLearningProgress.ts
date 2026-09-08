@@ -13,6 +13,7 @@ import {
   PlayerLevel,
   EvaluatedAchievement,
   LevelProgress,
+  XP_RULES,
 } from '../progression';
 import {
   playSuccessSound,
@@ -243,7 +244,7 @@ export function useLearningProgress() {
   };
 
   // Penaliza com desconto exato de XP (padrão 5 XP), nunca ficando abaixo de 0
-  const penalizeStepXp = (penalty: number = 5) => {
+  const penalizeStepXp = (penalty: number = XP_RULES.WRONG_ANSWER_PENALTY) => {
     const penaltyAmount = Math.abs(penalty);
     if (!Number.isFinite(penaltyAmount)) return;
 
@@ -258,15 +259,7 @@ export function useLearningProgress() {
 
     setUserState((prev) => {
       const nextXp = Math.max(0, prev.xp - penaltyAmount);
-      const nextState = { ...prev, xp: nextXp };
-      if (typeof window !== 'undefined') {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
-        } catch (e) {
-          logger.warn('Falha ao registrar penalidade de XP.', 'useLearningProgress', e);
-        }
-      }
-      return nextState;
+      return { ...prev, xp: nextXp };
     });
   };
 
@@ -324,17 +317,20 @@ export function useLearningProgress() {
       };
     });
 
-    // Se o módulo atual foi completado, desbloqueia o próximo módulo
+    // Se o módulo atual foi completado, desbloqueia o próximo módulo de forma imutável
+    let finalModules = updatedModules;
     const currentModObj = updatedModules.find((m) => m.id === userState.currentModuleId);
     if (currentModObj && currentModObj.status === 'completed') {
       const nextMod = updatedModules.find((m) => m.order === currentModObj.order + 1);
       if (nextMod) {
-        nextMod.status = 'current';
         nextCurrentModuleId = nextMod.id;
+        finalModules = updatedModules.map((m) =>
+          m.id === nextMod.id ? { ...m, status: 'current' as const } : m
+        );
       }
     }
 
-    setModules(updatedModules);
+    setModules(finalModules);
     // Preserva o XP atual (única fonte de verdade atualizada em tempo real)
     setUserState((prev) => {
       const nextState = {

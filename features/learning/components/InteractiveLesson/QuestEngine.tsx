@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Quest, QuestStep } from '@/types/learning';
+import { XP_RULES } from '@/features/learning/progression';
 import { QuestHeader } from './QuestHeader';
 import { QuestStepDispatcher } from './QuestStepDispatcher';
 import { QuestVictoryView } from './QuestVictoryView';
@@ -78,11 +80,11 @@ export function QuestEngine({
       setIsFlashing(true);
       setTimeout(() => setIsFlashing(false), 600);
     } else {
-      // Desconta exatamente 5 XP a cada resposta incorreta, nunca abaixo de 0
-      onPenalizeXp(5);
-      setSessionNetXp((prev) => Math.max(0, prev - 5));
+      // Desconta exatamente XP_RULES.WRONG_ANSWER_PENALTY (5 XP) a cada resposta incorreta, nunca abaixo de 0
+      onPenalizeXp(XP_RULES.WRONG_ANSWER_PENALTY);
+      setSessionNetXp((prev) => Math.max(0, prev - XP_RULES.WRONG_ANSWER_PENALTY));
       setXpDelta({
-        amount: 5,
+        amount: XP_RULES.WRONG_ANSWER_PENALTY,
         type: 'loss',
         id: Date.now(),
       });
@@ -187,19 +189,30 @@ export function QuestEngine({
 
       {/* Conteúdo Dinâmico da Etapa Atual renderizado pelo Despachante */}
       <div className="w-full flex-1 flex flex-col min-h-0 overflow-hidden">
-        <QuestStepDispatcher
-          step={currentStep}
-          selectedOptionId={selectedOptionId}
-          isAnswerChecked={isAnswerChecked}
-          isCorrect={isCorrect}
-          isLastStep={isLastStep}
-          onSelectOption={handleSelectOption}
-          onCheckAnswer={handleCheckAnswer}
-          onRetry={handleRetry}
-          onNextStep={handleNextStep}
-          onAdvanceConcept={handleNextStep}
-          onSkip={onExit}
-        />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep.id || currentStepIndex}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full h-full flex flex-col min-h-0"
+          >
+            <QuestStepDispatcher
+              step={currentStep}
+              selectedOptionId={selectedOptionId}
+              isAnswerChecked={isAnswerChecked}
+              isCorrect={isCorrect}
+              isLastStep={isLastStep}
+              onSelectOption={handleSelectOption}
+              onCheckAnswer={handleCheckAnswer}
+              onRetry={handleRetry}
+              onNextStep={handleNextStep}
+              onAdvanceConcept={handleNextStep}
+              onSkip={onExit}
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

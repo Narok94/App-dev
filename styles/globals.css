@@ -35,12 +35,12 @@
   --sar: env(safe-area-inset-right, 0px);
 
   /* Espaçamento vertical estrutural da página principal (Dashboard) */
-  --page-padding-top: max(22px, calc(var(--sat) + 16px));
+  --page-padding-top: max(24px, calc(var(--sat) + 18px));
   --page-padding-bottom: max(32px, calc(var(--sab) + 32px));
 
   /* Espaçamento vertical e horizontal estrutural das lições (LessonPlayer) */
-  --lesson-padding-top: max(16px, calc(var(--sat) + 14px));
-  --lesson-padding-bottom: max(16px, calc(var(--sab) + 14px));
+  --lesson-padding-top: max(20px, calc(var(--sat) + 18px));
+  --lesson-padding-bottom: max(18px, calc(var(--sab) + 16px));
   --lesson-padding-x: max(16px, calc(var(--sal) + 16px));
 }
 
