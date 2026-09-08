@@ -198,6 +198,7 @@ export function QuestEngine({
           onRetry={handleRetry}
           onNextStep={handleNextStep}
           onAdvanceConcept={handleNextStep}
+          onSkip={onExit}
         />
       </div>
     </div>

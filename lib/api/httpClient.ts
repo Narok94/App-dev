@@ -6,6 +6,7 @@
 
 import { logger } from '@/utils/logger';
 import { isValidUrl } from '@/utils/validation';
+import { env } from '@/lib/env';
 
 export interface HttpRequestOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;
@@ -53,12 +54,14 @@ type ResponseInterceptor = <T>(response: HttpResponse<T>) => Promise<HttpRespons
 
 const DEFAULT_TIMEOUT_MS = 10_000;
 const DEFAULT_RETRIES = 1;
+const INSECURE_SCHEMES = ['javascript:', 'data:', 'file:', 'blob:', 'vbscript:'];
 
 export class HttpClient {
   private baseURL: string;
   private defaultHeaders: Record<string, string>;
   private requestInterceptors: RequestInterceptor[] = [];
   private responseInterceptors: ResponseInterceptor[] = [];
+  private allowedOrigins: Set<string> = new Set();
 
   constructor(baseURL = '', defaultHeaders: Record<string, string> = {}) {
     this.baseURL = baseURL;
@@ -68,10 +71,52 @@ export class HttpClient {
       'X-Requested-With': 'XMLHttpRequest',
       ...defaultHeaders,
     };
+
+    // Inicializa allowlist com origens confiáveis conhecidas
+    if (typeof window !== 'undefined' && window.location?.origin) {
+      this.allowedOrigins.add(window.location.origin);
+    }
+    if (env.VITE_API_URL) {
+      try {
+        const parsed = new URL(env.VITE_API_URL);
+        this.allowedOrigins.add(parsed.origin);
+      } catch {
+        // Ignora caso seja caminho relativo
+      }
+    }
+    if (baseURL && (baseURL.startsWith('http://') || baseURL.startsWith('https://'))) {
+      try {
+        const parsed = new URL(baseURL);
+        this.allowedOrigins.add(parsed.origin);
+      } catch {
+        // Ignora
+      }
+    }
   }
 
   public setBaseURL(url: string): void {
     this.baseURL = url;
+    if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+      try {
+        const parsed = new URL(url);
+        this.allowedOrigins.add(parsed.origin);
+      } catch {
+        // Ignora
+      }
+    }
+  }
+
+  public addAllowedOrigin(origin: string): void {
+    try {
+      const parsed = new URL(origin);
+      this.allowedOrigins.add(parsed.origin);
+    } catch {
+      this.allowedOrigins.add(origin.trim().toLowerCase());
+    }
+  }
+
+  public getAllowedOrigins(): string[] {
+    return Array.from(this.allowedOrigins);
   }
 
   public addRequestInterceptor(interceptor: RequestInterceptor): void {
@@ -80,6 +125,60 @@ export class HttpClient {
 
   public addResponseInterceptor(interceptor: ResponseInterceptor): void {
     this.responseInterceptors.push(interceptor);
+  }
+
+  private validateUrlSecurity(targetUrl: string): void {
+    const trimmedLower = targetUrl.trim().toLowerCase();
+
+    for (const scheme of INSECURE_SCHEMES) {
+      if (trimmedLower.startsWith(scheme)) {
+        throw new HttpError({
+          message: `Requisição bloqueada: protocolo inseguro "${scheme}" não é permitido.`,
+          code: 'ERR_INSECURE_PROTOCOL',
+        });
+      }
+    }
+
+    // Caminhos relativos da própria aplicação (ex: /api/...) são seguros por definição
+    if (targetUrl.startsWith('/') && !targetUrl.startsWith('//')) {
+      return;
+    }
+
+    let parsed: URL;
+    try {
+      parsed = new URL(targetUrl, typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    } catch {
+      throw new HttpError({
+        message: 'Requisição bloqueada: URL inválida ou malformada.',
+        code: 'ERR_INVALID_URL',
+      });
+    }
+
+    const isDev = typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
+    const isLocalhost = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1';
+
+    // Bloqueia HTTP não criptografado fora de ambiente local / dev
+    if (parsed.protocol === 'http:' && !isDev && !isLocalhost) {
+      throw new HttpError({
+        message: 'Requisição bloqueada: HTTP sem criptografia é proibido em produção.',
+        code: 'ERR_INSECURE_HTTP',
+      });
+    }
+
+    // Valida contra a allowlist de destinos
+    const currentOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+    const isAllowed =
+      this.allowedOrigins.has(parsed.origin) ||
+      (currentOrigin && parsed.origin === currentOrigin) ||
+      (isDev && isLocalhost);
+
+    if (!isAllowed) {
+      logger.warn(`Requisição bloqueada para destino não autorizado: ${parsed.origin}`, 'HttpClient');
+      throw new HttpError({
+        message: 'Requisição bloqueada: destino não permitido na política de segurança.',
+        code: 'ERR_BLOCKED_DESTINATION',
+      });
+    }
   }
 
   private buildUrl(path: string, params?: Record<string, string | number | boolean | undefined>): string {
@@ -93,6 +192,8 @@ export class HttpClient {
         code: 'ERR_INVALID_URL',
       });
     }
+
+    this.validateUrlSecurity(fullUrl);
 
     if (params) {
       const searchParams = new URLSearchParams();

@@ -28,7 +28,6 @@ export default defineConfig(() => {
     server: {
       headers: {
         'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'SAMEORIGIN',
         'Referrer-Policy': 'strict-origin-when-cross-origin',
         'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       },
@@ -40,9 +39,12 @@ export default defineConfig(() => {
     },
     preview: {
       headers: {
+        'Content-Security-Policy':
+          "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self';",
         'X-Content-Type-Options': 'nosniff',
         'X-Frame-Options': 'SAMEORIGIN',
         'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       },
     },
   };

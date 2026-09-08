@@ -3,6 +3,8 @@
  * Handles service worker lifecycle and registration safely in browser environments.
  */
 
+import { logger } from '@/utils/logger';
+
 export function registerServiceWorker(): void {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) {
     return;
@@ -12,12 +14,10 @@ export function registerServiceWorker(): void {
     navigator.serviceWorker
       .register('/sw.js')
       .then((registration) => {
-        if (process.env.NODE_ENV === 'development') {
-          console.info('[PWA] Service Worker registered successfully:', registration.scope);
-        }
+        logger.info('Service Worker registrado com sucesso:', 'PWA', registration.scope);
       })
       .catch((error) => {
-        console.warn('[PWA] Service Worker registration failed:', error);
+        logger.warn('Falha ao registrar Service Worker.', 'PWA', error);
       });
   });
 }
@@ -32,6 +32,6 @@ export function unregisterServiceWorker(): void {
       registration.unregister();
     })
     .catch((error) => {
-      console.warn('[PWA] Error unregistering service worker:', error);
+      logger.warn('Falha ao desregistrar Service Worker.', 'PWA', error);
     });
 }

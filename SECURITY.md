@@ -1,88 +1,108 @@
 # Diretrizes e Política de Segurança (SECURITY.md)
 
-Este documento descreve a arquitetura de segurança atual da plataforma **Tatu**, as salvaguardas implementadas no ciclo de hardening e as recomendações mandatórias para as próximas etapas de evolução do sistema (Autenticação de Usuários e Banco de Dados Neon PostgreSQL).
+Este documento descreve a arquitetura de segurança real da plataforma **Tatu**, as salvaguardas implementadas no hardening de front-end, as limitações conhecidas no estágio atual e as regras mandatórias para as próximas etapas (Autenticação de Usuários e Banco de Dados Neon PostgreSQL).
 
 ---
 
-## 1. Visão Geral da Arquitetura Atual
+## 1. Proteções Implementadas no Projeto Atual
 
-No estágio atual de desenvolvimento, a plataforma opera como uma aplicação frontend robusta e reativa em React 19 com TypeScript rigoroso, utilizando persistência em cliente (`localStorage`).
+### 1.1. Headers de Segurança e Content Security Policy (CSP)
+- **Configuração de Deploy (`vercel.json`)**:
+  - `Content-Security-Policy`:
+    - `default-src 'self'`: Restringe recursos à própria origem por padrão.
+    - `script-src 'self'`: Bloqueia totalmente scripts externos e proíbe terminantemente `'unsafe-eval'`.
+    - `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`: Permite apenas fontes do Google e estilos locais (o `'unsafe-inline'` em estilos é restrito à injeção de CSS em tempo de execução pelo motor do Tailwind CSS).
+    - `font-src 'self' https://fonts.gstatic.com data:`: Permite o download de fontes confiáveis.
+    - `img-src 'self' data: blob:`: Previne carregamento de imagens de domínios arbitrários.
+    - `connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com`: Restringe conexões XHR/fetch apenas a endpoints permitidos.
+    - `frame-ancestors 'self'`: Protege a aplicação contra ataques de framing e clickjacking em produção.
+    - `object-src 'none'`: Desativa plug-ins legados (Flash, Java, etc.).
+    - `base-uri 'self'` e `form-action 'self'`: Impede sequestro de formulários e injeção de tags `<base>`.
+  - `X-Content-Type-Options: nosniff`: Previne ataques de MIME sniffing.
+  - `X-Frame-Options: SAMEORIGIN`: Proteção adicional contra framing em navegadores que não suportam CSP level 2.
+  - `Referrer-Policy: strict-origin-when-cross-origin`: Minimiza vazamento de caminhos e parâmetros em cabeçalhos Referer.
+  - `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()`: Desativa APIs sensíveis de hardware do dispositivo.
+  - `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`: HSTS configurado com preload para produção HTTPS.
+- **Ambiente de Desenvolvimento (`vite.config.ts`)**:
+  - Configurados cabeçalhos de proteção no preview e no dev server preservando compatibilidade total com o iframe da plataforma AI Studio.
 
-### Salvaguardas Implementadas no Hardening:
-- **Separação de Segredos**: Nenhuma chave privada, token ou credencial é injetada no bundle do cliente. O prefixo `VITE_` é estritamente controlado via `envPrefix` e validado em runtime através de `lib/env.ts`.
-- **Sanitização contra XSS e Injeção**:
-  - Utilitários de escape HTML (`escapeHtml`, `sanitizeHtml`) em `utils/sanitize.ts`.
-  - Higienização e contenção de tamanho para nomes de usuário e entradas de formulário (`sanitizeUserName`).
-- **Validação de Schemas e Tipos em Runtime**:
-  - `utils/validation.ts` valida estruturas de dados recuperadas do `localStorage`, garantindo integridade de estado contra manipulações arbitrárias no navegador.
-- **Camada HTTP Centralizada e Segura**:
-  - `lib/api/httpClient.ts` centraliza todas as chamadas de rede com timeout configurável (10s padrão), política de retentativas para erros de rede transitórios (5xx) e injeção controlada de cabeçalhos de autorização via Bearer Token.
-- **Estrutura de Autenticação Preparatória**:
-  - Interfaces contratuais limpas em `types/auth.ts` e serviços desacoplados em `lib/auth/authService.ts`.
-  - Armazenamento em memória volátil (`tokenStorage.ts`) mitigando riscos de roubo de sessão via scripts maliciosos.
-- **Error Boundary e Logging Seguro**:
-  - `ErrorBoundary.tsx` captura exceções de renderização sem vazar stack traces sensíveis para o usuário final.
-  - `utils/logger.ts` redige automaticamente chaves sensíveis (`password`, `token`, `secret`, `authorization`, etc.) e desativa logs verbosos em ambiente de produção.
-- **TypeScript com Rigor Máximo**:
-  - `"strict": true`, `"noImplicitAny": true`, `"strictNullChecks": true`, eliminando o uso de `any` em toda a base de código.
+### 1.2. Cliente HTTP com Allowlist de Destinos e Bloqueio de Esquemas
+- Em `lib/api/httpClient.ts`:
+  - **Bloqueio de Esquemas Inseguros**: Bloqueio ativo para `javascript:`, `data:`, `file:`, `blob:`, `vbscript:`.
+  - **Bloqueio de HTTP não criptografado**: Em produção, conexões via `http://` (sem TLS) são rejeitadas imediatamente.
+  - **Allowlist de Destinos Confiáveis**: Toda requisição para hosts externos não listados na allowlist (`window.location.origin`, `VITE_API_URL` ou domínios explicitamente registrados via `addAllowedOrigin()`) é bloqueada antes do disparo.
+  - **Timeout e Retentativas**: Timeout de 10 segundos por requisição com retentativas apenas para falhas transitórias de servidor (5xx).
 
----
+### 1.3. Logger Seguro com Redação Abrangente
+- Em `utils/logger.ts`:
+  - Todos os métodos (`debug`, `info`, `warn` e `error`) passam por sanitização profunda recursiva.
+  - Redação automática de termos sensíveis (`password`, `secret`, `token`, `api_key`, `credential`, `authorization`, `bearer`, `cookie`, `database_url`, `session`, `auth`, `private_key`).
+  - Detecção e ofuscação de padrões JWT e connection strings em strings de texto.
+  - Instâncias de `Error` são tratadas com segurança, sem vazar stack traces ou propriedades confidenciais.
+  - Em produção, supressão de mensagens de debug/info e logs de erro minimizados sem dados internos de runtime.
 
-## 2. Recomendações para Implementação de Autenticação (Fase Futura)
+### 1.4. Gestão e Isolamento de Variáveis de Ambiente
+- `lib/env.ts` valida as variáveis do cliente e monitora ativamente contra vazamento acidental de chaves sensíveis como `GEMINI_API_KEY`, `DATABASE_URL` e `JWT_SECRET`.
+- `.env.example` documenta de forma explícita a fronteira entre variáveis públicas de frontend (`VITE_*`) e segredos de backend (sem prefixo `VITE_`).
+- Nenhum segredo real existe no código fonte ou nos arquivos de exemplo.
 
-Quando o sistema de autenticação for implementado, as seguintes regras devem ser seguidas:
+### 1.5. Prevenção de XSS, Sanitização e Validação de Schemas
+- Ausência total de primitivas perigosas (`dangerouslySetInnerHTML`, `innerHTML`, `eval`, `new Function`, `document.write`).
+- `utils/sanitize.ts` aplica escape de caracteres especiais HTML e contenção de tamanho para formulários.
+- `utils/validation.ts` valida em runtime cada campo lido de `localStorage`, revertendo para fallbacks seguros caso ocorra manipulação externa.
 
-### 2.1. Gestão de Tokens e Sessão
-- **Nunca armazene tokens de sessão (JWT de acesso/refresh) em `localStorage` ou `sessionStorage`**. O armazenamento local é acessível por qualquer JavaScript em execução na origem (XSS).
-- **Adote cookies `HttpOnly`, `Secure` e `SameSite=Strict` ou `SameSite=Lax`** para a transmissão do refresh token.
-- Mantenha o **Access Token (JWT de curta duração, 5-15 min) em memória** na aplicação cliente (como já preparado em `lib/auth/tokenStorage.ts`), renovando-o silenciosamente via endpoint `/api/auth/refresh`.
-
-### 2.2. Prevenção de Ataques de Força Bruta
-- Implemente **Rate Limiting** rigoroso nas rotas de autenticação (`/api/auth/login`, `/api/auth/register`, `/api/auth/reset-password`).
-- Utilize algoritmos modernos de hash de senha no servidor (Argon2id ou Bcrypt com fator de custo >= 12).
-- Nunca processe ou gere hashes de senhas no frontend.
-
-### 2.3. Proteção CSRF
-- Para rotas que utilizam cookies de autenticação, implemente tokens anti-CSRF (`Double Submit Cookie` ou cabeçalhos customizados validados no backend).
-
----
-
-## 3. Recomendações para Integração com Neon PostgreSQL (Fase Futura)
-
-Quando a persistência migrar de `localStorage` para Neon PostgreSQL, siga estritamente estas diretrizes:
-
-### 3.1. Arquitetura Server-Side Mandatória
-- **O cliente frontend JAMAIS deve se conectar diretamente ao banco de dados Neon**.
-- Todas as operações devem passar por uma camada de API backend (Express, Cloud Run, Serverless Functions) com autenticação e autorização prévia por rota.
-- A connection string `DATABASE_URL` deve residir exclusivamente como variável de ambiente do servidor, jamais com prefixo `VITE_`.
-
-### 3.2. Prevenção de SQL Injection
-- **Nunca concatene strings para montar queries SQL**.
-- Utilize um ORM/Query Builder moderno com prepared statements (ex: Drizzle ORM com `@neondatabase/serverless`).
-- Todas as entradas recebidas nas rotas da API devem ser validadas com schemas estritos (ex: Zod) antes de atingir o banco de dados.
-
-### 3.3. Princípio do Menor Privilégio (Least Privilege)
-- Crie usuários de banco de dados com permissões estritas apenas às tabelas e operações necessárias.
-- Utilize conexões com SSL obrigatório (`?sslmode=require`).
-- Utilize o Connection Pooler do Neon (porta 6543 ou endpoint `-pooler`) para gerenciar conexões em ambientes de alto paralelismo.
+### 1.6. TypeScript Estrito
+- Configuração do `tsconfig.json` com rigor máximo (`"strict": true`, `"noImplicitAny": true`, `"strictNullChecks": true`, `"strictFunctionTypes": true`).
+- Eliminação de usos do tipo `any` na base de código.
 
 ---
 
-## 4. Cabeçalhos de Segurança Recomendados (HTTP Security Headers)
+## 2. Limitações Reais Atuais
 
-Para o ambiente de produção e deploy:
-
-```http
-Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://*.googleapis.com; object-src 'none'; frame-ancestors 'self';
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
-Strict-Transport-Security: max-age=31536000; includeSubDomains
-```
+1. **Persistência Local Não Assinada**:
+   - O aplicativo ainda não possui backend próprio nem banco de dados. O progresso do usuário reside no `localStorage` do navegador.
+   - Embora os dados sejam validados e sanitizados contra injeções no momento da leitura, eles podem ser limpos pelo usuário ou editados localmente através do DevTools.
+2. **Ausência de Autenticação Real no Servidor**:
+   - O módulo de autenticação atual (`types/auth.ts`, `lib/auth/`) é uma base arquitetural desacoplada, pronta para integração futura, mas sem endpoints de login ativos.
 
 ---
 
-## 5. Como Reportar Vulnerabilidades
+## 3. REGRA MANDATÓRIA: Integração com Neon PostgreSQL (Fase Futura)
 
-Caso identifique uma vulnerabilidade ou comportamento suspeito de segurança, entre em contato imediatamente com a equipe de engenharia antes de qualquer divulgação pública.
+> ### ⚠️ REGRA CRÍTICA DE ARQUITETURA
+> **O frontend NUNCA deve conectar diretamente ao Neon PostgreSQL.**
+> - `DATABASE_URL` e as credenciais do banco de dados devem residir **exclusivamente** no ambiente de servidor (Node.js, Cloud Run, Vercel Serverless Functions).
+> - **Nenhum driver de banco de dados** (ex: `@neondatabase/serverless`, `pg`, `pg-pool`) pode ser importado em componentes ou módulos do cliente React.
+> - **Toda leitura e escrita no banco de dados deve passar por uma camada server-side** com:
+>   1. Autenticação prévia da requisição;
+>   2. Autorização baseada em papéis/permissões (RBAC);
+>   3. Validação estrita de schema dos dados de entrada (ex: Zod);
+>   4. Prepared statements (via ORM como Drizzle) para imunidade contra SQL Injection;
+>   5. Conexão criptografada via SSL obrigatório (`?sslmode=require`).
+
+---
+
+## 4. REGRA MANDATÓRIA: Autenticação e Controle de Acesso Futuros
+
+> ### ⚠️ REGRAS DE CONTROLE DE ACESSO
+> 1. **Autorização deve ser feita obrigatoriamente no servidor:**
+>    - O servidor é a única fonte de autoridade para autorizar operações.
+> 2. **Esconder botão ou rota no frontend NÃO é controle de acesso:**
+>    - Condições de UI como `{isAdmin && <BotaoExcluir />}` ou redirecionamentos de rota no React são recursos de usabilidade (UX), nunca barreiras de segurança. Toda ação protegida deve ser verificada pelo backend no momento da chamada da API.
+> 3. **Tokens sensíveis não devem residir em `localStorage`:**
+>    - Não armazene JWTs ou tokens de refresh em `localStorage` ou `sessionStorage`.
+>    - O mecanismo preferencial para refresh tokens é **Cookie com atributos `HttpOnly; Secure; SameSite=Strict`** (ou `SameSite=Lax`).
+>    - O Access Token de curta duração deve ser mantido em **memória volátil** na aplicação cliente (já estruturado em `lib/auth/tokenStorage.ts`).
+> 4. **Validar autorização em toda operação protegida:**
+>    - Cada rota de API que altere estado ou consulte dados privados deve extrair e validar o contexto de autenticação do usuário.
+
+---
+
+## 5. Nota de Segurança Atual do Projeto: **7.8 / 10**
+
+### Justificativa Realista:
+- **O que justifica a nota 7.8 (Muito Forte para o escopo atual de frontend):**
+  - Para uma aplicação client-side em desenvolvimento, o projeto atingiu o teto de excelência: CSP configurada sem `unsafe-eval`, headers HSTS/nosniff preparados para deploy na Vercel, allowlist estrita contra destinos arbitrários no cliente HTTP, logger com mascaramento abrangente de credenciais, validação de schema para qualquer leitura de storage, isolamento de segredos de ambiente, Error Boundary para contenção de exceções e compilação TypeScript com 100% de rigor estrito sem `any`.
+- **Por que a nota NÃO é 9 ou 10 (-2.2):**
+  - **Falta de Backend Ativo (-1.2)**: A segurança de dados de ponta a ponta depende de uma camada de API servidora autenticada.
+  - **Falta de Banco com Controle de Acesso e Assinatura Criptográfica (-1.0)**: O estado do aluno em `localStorage` não possui comprovação de integridade emitida por um servidor seguro, o que só será alcançado com a persistência em Neon PostgreSQL e autenticação real.

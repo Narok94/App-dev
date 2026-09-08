@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Swords, Check, X, RotateCcw, ArrowRight, Zap, AlertCircle, Code, ListOrdered, CheckCircle2 } from 'lucide-react';
 import { LessonStep, QuizOption } from '@/types/learning';
 import { CodeGrimoire } from './CodeGrimoire';
@@ -13,6 +14,7 @@ interface QuizStepViewProps {
   onCheckAnswer: () => void;
   onRetry: () => void;
   onNextStep: () => void;
+  onSkip?: () => void;
 }
 
 export function QuizStepView({
@@ -25,6 +27,7 @@ export function QuizStepView({
   onCheckAnswer,
   onRetry,
   onNextStep,
+  onSkip,
 }: QuizStepViewProps) {
   // Determina rótulo e ícone contextual conforme o tipo de Quest Step
   const getStepTypeInfo = () => {
@@ -38,21 +41,21 @@ export function QuizStepView({
         };
       case 'code_completion':
         return {
-          label: 'Completar Código',
+          label: 'Complete o Código',
           icon: <Code className="w-3 h-3 text-[#C8F03D]" />,
           bg: 'rgba(200,240,61,0.12)',
           color: '#C8F03D',
         };
       case 'code_fix':
         return {
-          label: 'Correção de Bug',
+          label: 'Corrija o Bug',
           icon: <AlertCircle className="w-3 h-3 text-[#FF6B4A]" />,
           bg: 'rgba(255,107,74,0.12)',
           color: '#FF6B4A',
         };
       case 'ordering':
         return {
-          label: 'Ordenação de Código',
+          label: 'Ordene a Estrutura',
           icon: <ListOrdered className="w-3 h-3 text-[#8B7CF6]" />,
           bg: 'rgba(139,124,246,0.12)',
           color: '#8B7CF6',
@@ -66,7 +69,7 @@ export function QuizStepView({
         };
       default:
         return {
-          label: 'Sua Missão na Quest',
+          label: 'Missão do Passo',
           icon: <Swords className="w-3 h-3 text-[#FF6B4A]" />,
           bg: 'var(--coral-tint)',
           color: 'var(--coral)',
@@ -117,7 +120,13 @@ export function QuizStepView({
           )}
 
           {/* Lista de Alternativas com Seleção Imediata e Dimensionalmente Estável */}
-          <div className="options" role="radiogroup" aria-label="Alternativas da questão">
+          <motion.div 
+            className="options" 
+            role="radiogroup" 
+            aria-label="Alternativas da questão"
+            animate={isAnswerChecked && !isCorrect ? { x: [0, -6, 6, -4, 4, 0] } : { x: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+          >
             {step.options?.map((option: QuizOption, idx: number) => {
               const isSelected = selectedOptionId === option.id;
               const letter = String.fromCharCode(65 + idx); // A, B, C, D
@@ -151,7 +160,9 @@ export function QuizStepView({
               }
 
               return (
-                <button
+                <motion.button
+                  whileHover={!isAnswerChecked ? { scale: 1.01 } : {}}
+                  whileTap={!isAnswerChecked ? { scale: 0.98 } : {}}
                   key={option.id}
                   type="button"
                   onClick={() => onSelectOption(option.id)}
@@ -174,29 +185,34 @@ export function QuizStepView({
                   <div className={radioIndicatorClass}>
                     {indicatorContent}
                   </div>
-                </button>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Painel Inferior Estável: Feedback Contextual + Botão de Ação */}
       <div className="w-full shrink-0 flex flex-col gap-2 pt-0.5">
-        {/* Painel de Feedback Elegante, Compacto e Sem Deslocamentos Bruscos */}
+        {/* Painel de Feedback Elegante, Compacto e Encorajador */}
         {isAnswerChecked && (
-          <div className={`feedback show ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`}>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2 }}
+            className={`feedback show ${isCorrect ? 'correct-fb' : 'incorrect-fb'}`}
+          >
             <div className="flex items-center justify-between">
               <div className="fb-title">
                 {isCorrect ? (
                   <>
                     <Check className="w-4 h-4 text-[#C8F03D]" />
-                    <span>Missão Cumprida com Sucesso! 🎯</span>
+                    <span>Boa! Mandou bem no código. 🎯</span>
                   </>
                 ) : (
                   <>
                     <AlertCircle className="w-4 h-4 text-[#FF6B4A]" />
-                    <span>Missão Falhada ⚔️</span>
+                    <span>Quase lá! Dá uma olhada no código de novo. 💡</span>
                   </>
                 )}
               </div>
@@ -215,38 +231,44 @@ export function QuizStepView({
             <div className="fb-text">
               {isCorrect
                 ? step.explanationOnCorrect ||
-                  'Excelente leitura do cenário! Você dominou a lógica essencial desta questão.'
+                  'Excelente raciocínio! Você aplicou a sintaxe correta.'
                 : step.explanationOnIncorrect ||
-                  'Analise com calma os conceitos abordados. Lembre-se das funções principais de cada elemento.'}
+                  'Faz parte errar no início! Releia a estrutura da tag e tente novamente.'}
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Botões de Ação Grandes, Confortáveis e Fáceis de Tocar */}
         <div className="w-full">
           {!isAnswerChecked ? (
-            <button
+            <motion.button
+              whileHover={selectedOptionId ? { scale: 1.02 } : {}}
+              whileTap={selectedOptionId ? { scale: 0.97 } : {}}
               type="button"
               onClick={onCheckAnswer}
               disabled={!selectedOptionId}
-              className={`btn-primary py-3.5 sm:py-4 text-base rounded-2xl w-full select-none ${
+              className={`btn-primary py-3.5 sm:py-4 text-base rounded-2xl w-full select-none cursor-pointer ${
                 selectedOptionId ? 'ready shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1' : 'disabled'
               }`}
             >
-              <span>{selectedOptionId ? 'Confirmar Resposta ⚔️' : 'Selecione uma Alternativa'}</span>
-            </button>
+              <span>{selectedOptionId ? 'Confirmar Resposta ⚡' : 'Selecione uma Alternativa'}</span>
+            </motion.button>
           ) : isCorrect ? (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.97 }}
               type="button"
               onClick={onNextStep}
               className="btn-primary ready py-3.5 sm:py-4 text-base rounded-2xl w-full shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2 group"
             >
-              <span>{isLastStep ? 'Concluir Quest 🏆' : 'Continuar a Jornada'}</span>
+              <span>{isLastStep ? 'Concluir Missão 🏆' : 'Continuar a Jornada'}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </motion.button>
           ) : (
             <div className="flex gap-2.5 w-full">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 type="button"
                 onClick={onRetry}
                 className="btn-primary ready flex-1 py-3.5 sm:py-4 text-base rounded-2xl active:translate-y-1 cursor-pointer flex items-center justify-center gap-2"
@@ -257,16 +279,18 @@ export function QuizStepView({
                 }}
               >
                 <RotateCcw className="w-4 h-4" />
-                <span>Tentar Novamente</span>
-              </button>
-              <button
+                <span>Tentar de Novo</span>
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 type="button"
-                onClick={onNextStep}
+                onClick={onSkip}
                 className="px-4 py-3.5 sm:py-4 rounded-2xl border border-[#2C3247] bg-[#232840] text-[#9096AC] hover:text-[#F2F1EA] font-baloo font-bold text-sm transition-colors cursor-pointer active:scale-95 flex items-center gap-1.5 shrink-0"
               >
                 <span>Pular</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </motion.button>
             </div>
           )}
         </div>
@@ -274,3 +298,4 @@ export function QuizStepView({
     </div>
   );
 }
+

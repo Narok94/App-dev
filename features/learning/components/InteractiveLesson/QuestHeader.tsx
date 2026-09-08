@@ -1,6 +1,8 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { X, Sparkles, Swords, Zap } from 'lucide-react';
 import { LessonStep } from '@/types/learning';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 interface QuestHeaderProps {
   moduleTitle: string;
@@ -33,15 +35,17 @@ export function QuestHeader({
       {/* Barra de Ações do Topo */}
       <div className="flex items-center justify-between gap-3">
         {/* Botão de Saída Estilo RPG */}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.94 }}
           type="button"
           onClick={onExit}
-          className="w-10 h-10 rounded-2xl bg-[#1B1F2E] border border-[#2C3247] hover:border-[#8B7CF6]/50 hover:bg-[#232840] text-[#9096AC] hover:text-[#F2F1EA] flex items-center justify-center transition-all duration-150 cursor-pointer shadow-sm active:scale-95"
+          className="w-10 h-10 rounded-2xl bg-[#1B1F2E] border border-[#2C3247] hover:border-[#8B7CF6]/50 hover:bg-[#232840] text-[#9096AC] hover:text-[#F2F1EA] flex items-center justify-center transition-colors cursor-pointer shadow-sm"
           aria-label="Sair da Quest"
           title="Sair da quest e retornar ao hub"
         >
           <X className="w-4 h-4" />
-        </button>
+        </motion.button>
 
         {/* Título & Progresso da Missão */}
         <div className="flex-1 flex flex-col items-center text-center min-w-0 px-1">
@@ -82,7 +86,7 @@ export function QuestHeader({
               xpDelta?.type === 'loss' ? 'fill-[#FF6B4A]' : 'fill-[#C8F03D]'
             }`}
           />
-          <span>{userXp ?? totalXp} XP</span>
+          <AnimatedCounter value={userXp ?? totalXp} suffix=" XP" />
           {xpDelta && (
             <span
               key={xpDelta.id}

@@ -7,3 +7,4 @@ export * from './components/ModuleDetailModal';
 export * from './components/ModuleBottomSheet';
 export * from './components/LearnScreen';
 export * from './components/InteractiveLesson';
+export * from './progression';

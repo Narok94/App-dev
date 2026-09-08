@@ -14,6 +14,7 @@ interface QuestStepDispatcherProps {
   onRetry: () => void;
   onNextStep: () => void;
   onAdvanceConcept: () => void;
+  onSkip?: () => void;
 }
 
 /**
@@ -32,6 +33,7 @@ export function QuestStepDispatcher({
   onRetry,
   onNextStep,
   onAdvanceConcept,
+  onSkip,
 }: QuestStepDispatcherProps) {
   switch (step.type) {
     case 'concept':
@@ -61,6 +63,7 @@ export function QuestStepDispatcher({
           onCheckAnswer={onCheckAnswer}
           onRetry={onRetry}
           onNextStep={onNextStep}
+          onSkip={onSkip}
         />
       );
   }

@@ -6,6 +6,20 @@ import {
   getFirstQuestOfModule,
   getActiveEra,
 } from '../curriculum';
+import {
+  calculateLevelProgress,
+  detectLevelUp,
+  detectNewAchievements,
+  PlayerLevel,
+  EvaluatedAchievement,
+  LevelProgress,
+} from '../progression';
+import {
+  playSuccessSound,
+  playErrorSound,
+  playLevelUpSound,
+  playXpGainSound,
+} from '@/lib/soundEffects';
 import { validateUserState, validateLearningModules, isValidXp } from '@/utils/validation';
 import { sanitizeUserName } from '@/utils/sanitize';
 import { logger } from '@/utils/logger';
@@ -15,6 +29,9 @@ const STORAGE_KEY = 'tatu_learning_progress_v2';
 export function useLearningProgress() {
   const [selectedModule, setSelectedModule] = useState<LearningModule | null>(null);
   const [activeLesson, setActiveLesson] = useState<InteractiveLesson | null>(null);
+  const [levelUpModalLevel, setLevelUpModalLevel] = useState<PlayerLevel | null>(null);
+  const [recentAchievement, setRecentAchievement] = useState<EvaluatedAchievement | null>(null);
+  const [recentXpDelta, setRecentXpDelta] = useState<{ id: number; amount: number; type: 'gain' | 'loss' } | null>(null);
 
   // Carrega estado de módulos inicial integrando com o catálogo de currículo da Era ativa
   const [modules, setModules] = useState<LearningModule[]>(() => {
@@ -187,9 +204,33 @@ export function useLearningProgress() {
   // Concede XP de uma etapa da quest de forma atômica e persistente
   const awardStepXp = (amount: number) => {
     if (!isValidXp(amount) || amount <= 0) return;
+
+    // Efeito sonoro de ganho de XP
+    playXpGainSound(userState.soundEnabled !== false);
+
+    setRecentXpDelta({
+      id: Date.now(),
+      amount,
+      type: 'gain',
+    });
+
     setUserState((prev) => {
       const nextXp = Math.min(10_000_000, prev.xp + amount);
       const nextState = { ...prev, xp: nextXp };
+
+      // Verifica se houve Level Up
+      const levelUp = detectLevelUp(prev.xp, nextXp);
+      if (levelUp) {
+        setLevelUpModalLevel(levelUp.newLevel);
+        playLevelUpSound(userState.soundEnabled !== false);
+      }
+
+      // Verifica se desbloqueou nova conquista com esse ganho
+      const newAchs = detectNewAchievements(prev, nextState);
+      if (newAchs.length > 0) {
+        setRecentAchievement(newAchs[0]);
+      }
+
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
@@ -205,6 +246,16 @@ export function useLearningProgress() {
   const penalizeStepXp = (penalty: number = 5) => {
     const penaltyAmount = Math.abs(penalty);
     if (!Number.isFinite(penaltyAmount)) return;
+
+    // Efeito sonoro suave de erro
+    playErrorSound(userState.soundEnabled !== false);
+
+    setRecentXpDelta({
+      id: Date.now(),
+      amount: penaltyAmount,
+      type: 'loss',
+    });
+
     setUserState((prev) => {
       const nextXp = Math.max(0, prev.xp - penaltyAmount);
       const nextState = { ...prev, xp: nextXp };
@@ -235,6 +286,8 @@ export function useLearningProgress() {
 
   // Conclui a lição/quest com sucesso e calcula desbloqueios sem duplicar XP
   const completeLesson = (lessonId: string, _xpEarned?: number) => {
+    playSuccessSound(userState.soundEnabled !== false);
+
     // 1. Atualiza IDs de aulas/quests completadas
     const currentCompleted = userState.completedLessonIds || [];
     const isAlreadyCompleted = currentCompleted.includes(lessonId);
@@ -291,6 +344,13 @@ export function useLearningProgress() {
         completedModulesCount: updatedCompletedModules,
         currentModuleId: nextCurrentModuleId,
       };
+
+      // Detecta novas conquistas desbloqueadas pela conclusão da lição/módulo
+      const newAchs = detectNewAchievements(prev, nextState);
+      if (newAchs.length > 0) {
+        setRecentAchievement(newAchs[0]);
+      }
+
       if (typeof window !== 'undefined') {
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
@@ -306,12 +366,20 @@ export function useLearningProgress() {
     setActiveLesson(null);
   };
 
+  const levelProgress: LevelProgress = calculateLevelProgress(userState.xp);
+
   return {
     currentEra: getActiveEra(),
     modules,
     userState,
     currentModule,
     progressPercent,
+    levelProgress,
+    levelUpModalLevel,
+    recentAchievement,
+    recentXpDelta,
+    closeLevelUpModal: () => setLevelUpModalLevel(null),
+    closeAchievementToast: () => setRecentAchievement(null),
     selectedModule,
     activeLesson,
     activeQuest: activeLesson,

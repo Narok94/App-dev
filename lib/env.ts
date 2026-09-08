@@ -25,7 +25,18 @@ function parseClientEnv(): ClientEnv {
 
   // Verify that no server secret is accidentally prefixed or accessible
   if (typeof window !== 'undefined') {
-    const dangerousKeys = ['DATABASE_URL', 'SECRET', 'PRIVATE_KEY', 'GEMINI_API_KEY'];
+    const dangerousKeys = [
+      'DATABASE_URL',
+      'VITE_DATABASE_URL',
+      'SECRET',
+      'VITE_SECRET',
+      'PRIVATE_KEY',
+      'VITE_PRIVATE_KEY',
+      'GEMINI_API_KEY',
+      'VITE_GEMINI_API_KEY',
+      'JWT_SECRET',
+      'VITE_JWT_SECRET',
+    ];
     const envRecord = (import.meta.env as unknown as Record<string, unknown>) || {};
     dangerousKeys.forEach((key) => {
       if (envRecord[key]) {
