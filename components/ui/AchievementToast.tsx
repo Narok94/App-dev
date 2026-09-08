@@ -30,7 +30,10 @@ export function AchievementToast({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -16, scale: 0.95 }}
           transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[380px] rounded-2xl bg-[#1B1F2E] border border-[#38BDF8]/40 p-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(56,189,248,0.2)] flex items-center justify-between gap-3 select-none"
+          className="fixed left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[380px] rounded-2xl bg-[#1B1F2E] border border-[#38BDF8]/40 p-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.6),0_0_20px_rgba(56,189,248,0.2)] flex items-center justify-between gap-3 select-none"
+          style={{
+            top: 'max(16px, calc(env(safe-area-inset-top, 0px) + 12px))',
+          }}
         >
           <div className="flex items-center gap-3 min-w-0">
             {/* Badge Icon */}

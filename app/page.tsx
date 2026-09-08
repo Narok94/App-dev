@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { HomeScreen } from '@/features/home';
 import { 
-  LessonPlayer, 
   ModuleBottomSheet,
   useLearningProgress 
 } from '@/features/learning';
 import { ProfileSettingsModal } from '@/components/profile/ProfileSettingsModal';
 import { LevelUpModal } from '@/components/ui/LevelUpModal';
 import { AchievementToast } from '@/components/ui/AchievementToast';
+
+const LessonPlayer = lazy(() =>
+  import('@/features/learning/components/InteractiveLesson/LessonPlayer').then((m) => ({
+    default: m.LessonPlayer,
+  }))
+);
 
 export default function AppPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -53,7 +58,7 @@ export default function AppPage() {
 
   return (
     <div className="w-full min-h-screen min-h-[100dvh] bg-[#12151F] text-[#F2F1EA] relative flex flex-col items-center selection:bg-[#C8F03D] selection:text-[#12151F]">
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {activeLesson ? (
           <motion.div
             key="lesson-player"
@@ -64,20 +69,28 @@ export default function AppPage() {
             className="h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden relative"
           >
             <div className="w-full max-w-[440px] h-full flex flex-col">
-              <LessonPlayer
-                lesson={activeLesson}
-                userXp={userState.xp}
-                onAwardXp={awardStepXp}
-                onPenalizeXp={penalizeStepXp}
-                onComplete={completeLesson}
-                onExit={exitLesson}
-              />
+              <Suspense
+                fallback={
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full border-2 border-[#C8F03D] border-t-transparent animate-spin" />
+                  </div>
+                }
+              >
+                <LessonPlayer
+                  lesson={activeLesson}
+                  userXp={userState.xp}
+                  onAwardXp={awardStepXp}
+                  onPenalizeXp={penalizeStepXp}
+                  onComplete={completeLesson}
+                  onExit={exitLesson}
+                />
+              </Suspense>
             </div>
           </motion.div>
         ) : (
           <motion.div
             key="home-screen"
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}

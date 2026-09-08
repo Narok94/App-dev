@@ -49,48 +49,21 @@ export function HomeScreen({
 
   const currentLevel = levelProgress?.currentLevel;
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 12 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { type: 'spring' as const, damping: 25, stiffness: 300 }
-    }
-  };
-
   return (
-    <motion.div 
-      className="flex flex-col gap-[18px] w-full"
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
+    <div className="flex flex-col gap-[18px] w-full">
       {/* 1. Saudação */}
-      <motion.div variants={itemVariants} className="greeting">
+      <div className="greeting">
         <h1 className="font-baloo text-2xl font-bold text-[#F2F1EA]">Olá, {greetingName} 👋</h1>
         <p className="text-xs text-[#9096AC]">
           {completedToday
             ? 'Mandou bem hoje! Que tal avançar mais uma missão no código?'
             : 'Sua jornada de código te espera. Pronto para a próxima missão?'}
         </p>
-      </motion.div>
+      </div>
 
       {/* 1.5. Card de Nível & Evolução RPG */}
       {levelProgress && (
-        <motion.div
-          variants={itemVariants}
-          className="w-full p-4 rounded-3xl bg-[#1B1F2E] border border-[#2C3247] shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col gap-3 relative overflow-hidden"
-        >
+        <div className="w-full p-4 rounded-3xl bg-[#1B1F2E] border border-[#2C3247] shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex flex-col gap-3 relative overflow-hidden">
           {/* Subtle top glow */}
           <div className="absolute top-0 right-0 w-36 h-20 bg-[radial-gradient(ellipse_at_top_right,rgba(139,124,246,0.15),transparent_70%)] pointer-events-none" />
 
@@ -140,11 +113,11 @@ export function HomeScreen({
               </span>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* 2. Hero - Próxima Lição / Missão Ativa */}
-      <motion.div variants={itemVariants} className="hero">
+      <div className="hero">
         <div className="hero-eyebrow flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-[#C8F03D] animate-pulse" />
           <span>módulo {nextPendingLesson.module.order} · {nextPendingLesson.module.title.toLowerCase()}</span>
@@ -166,10 +139,10 @@ export function HomeScreen({
         >
           {completedLessonsCount === 0 ? 'Iniciar Missão' : 'Continuar Missão'}
         </motion.button>
-      </motion.div>
+      </div>
 
       {/* 3. Stats Grid (3 Colunas) */}
-      <motion.div variants={itemVariants} className="stats">
+      <div className="stats">
         <motion.div whileHover={{ y: -2 }} className="stat-card">
           <span className="stat-icon">🔥</span>
           <div className="stat-value">{userState.streakDays}</div>
@@ -198,10 +171,10 @@ export function HomeScreen({
           <div className="stat-value">{unlockedBadgesCount}/{evaluatedAchs.length}</div>
           <div className="stat-label">conquistas</div>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* 4. Trilha de Aprendizado (Compacta por padrão, expansível em zigue-zague) */}
-      <motion.div variants={itemVariants} className="path-card">
+      <div className="path-card">
         <div className="path-head">
           <h3>Trilha de HTML</h3>
           <span>{userState.completedModulesCount} de {modules.length} módulos</span>
@@ -271,11 +244,11 @@ export function HomeScreen({
             );
           })}
         </div>
-      </motion.div>
+      </div>
 
       {/* 4.5. Desbloqueio da Próxima Era: Era da Construção — CSS */}
       {modules.length > 0 && modules.every((m) => m.status === 'completed') && (
-        <motion.div variants={itemVariants} className="w-full p-4 rounded-2xl bg-gradient-to-br from-[#8B7CF6]/20 to-[#38BDF8]/10 border border-[#8B7CF6]/40 shadow-lg flex flex-col gap-2.5">
+        <div className="w-full p-4 rounded-2xl bg-gradient-to-br from-[#8B7CF6]/20 to-[#38BDF8]/10 border border-[#8B7CF6]/40 shadow-lg flex flex-col gap-2.5">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl">🏆</span>
             <div>
@@ -299,12 +272,11 @@ export function HomeScreen({
               Desbloqueada
             </span>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* 5. Card de Conquistas */}
       <motion.div 
-        variants={itemVariants}
         className="badges-card"
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
@@ -397,6 +369,6 @@ export function HomeScreen({
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

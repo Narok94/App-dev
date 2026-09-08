@@ -8,7 +8,11 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+    </noscript>
     <title>Tatu</title>
     <meta name="description" content="Aplicativo premium de aprendizado prático de programação web, trilha interativa de HTML5 com foco em tecnologia, curiosidade e evolução do conhecimento." />
     <meta property="og:title" content="Tatu" />
@@ -23,7 +27,25 @@
     <link rel="manifest" href="/manifest.json" />
   </head>
   <body class="bg-[#12151F] text-[#F2F1EA] min-h-screen min-h-[100dvh]">
-    <div id="root" class="bg-[#12151F] min-h-screen min-h-[100dvh] flex flex-col"></div>
+    <div id="root" class="bg-[#12151F] min-h-screen min-h-[100dvh] flex flex-col">
+      <div style="width:100%;max-width:420px;margin:0 auto;padding:max(22px, calc(env(safe-area-inset-top, 0px) + 16px)) 16px 32px;display:flex;flex-direction:column;gap:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:12px;background:#1B1F2E;border:1px solid #2C3247;display:flex;align-items:center;justify-content:center;color:#C8F03D;font-weight:bold;font-size:16px;">⚡</div>
+            <span style="font-family:sans-serif;font-weight:bold;font-size:18px;color:#F2F1EA;">App-dev</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <div style="height:28px;width:76px;border-radius:9999px;background:#232840;border:1px solid #2C3247;"></div>
+            <div style="height:28px;width:84px;border-radius:9999px;background:#232840;border:1px solid #2C3247;"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px;">
+          <div style="height:24px;width:160px;border-radius:8px;background:#1B1F2E;"></div>
+          <div style="height:14px;width:240px;border-radius:6px;background:#1E2436;"></div>
+        </div>
+        <div style="height:164px;width:100%;border-radius:24px;background:#1B1F2E;border:1px solid #2C3247;"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
