@@ -6,5 +6,6 @@ export * from './components/HeroMissionCard';
 export * from './components/StatsGrid';
 export * from './components/EraUnlockBanner';
 export * from './components/AchievementsSection';
+export * from './components/AchievementsSummaryCard';
 export * from './components/StatsSection';
 export * from './components/RecentActivitySection';

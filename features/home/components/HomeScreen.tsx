@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import { UserLearningState, LearningModule, LessonPreview } from '@/types/learning';
 import { LevelProgress, evaluateAchievements } from '@/features/learning/progression';
+import { AppDialogModal } from '@/components/ui/AppDialogModal';
 import { LevelProgressCard } from './LevelProgressCard';
 import { HeroMissionCard } from './HeroMissionCard';
 import { StatsGrid } from './StatsGrid';
 import { LearningTrailCard } from './LearningTrailCard';
 import { EraUnlockBanner } from './EraUnlockBanner';
 import { AchievementsSection } from './AchievementsSection';
+import { AchievementsSummaryCard } from './AchievementsSummaryCard';
 import { StatsSection } from './StatsSection';
 
 export interface HomeScreenProps {
@@ -21,8 +22,6 @@ export interface HomeScreenProps {
   };
   onContinueLearning: () => void;
   onSelectModule: (mod: LearningModule) => void;
-  progressPercent?: number;
-  onStartLesson?: (lessonId: string) => void;
 }
 
 export function HomeScreen({
@@ -99,99 +98,30 @@ export function HomeScreen({
       {isEraCompleted && <EraUnlockBanner />}
 
       {/* 7. Card de Resumo de Conquistas */}
-      <motion.div
-        className="badges-card"
-        whileHover={{ scale: 1.01 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={() => setActiveModal(activeModal === 'achievements' ? null : 'achievements')}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && setActiveModal('achievements')}
-      >
-        <div>
-          <h3>Suas conquistas</h3>
-          <p>{unlockedBadgesCount} de 6 desbloqueadas</p>
-        </div>
-        <div className="badge-icons">
-          {evaluatedAchs.slice(0, 3).map((ach) => (
-            <div
-              key={ach.id}
-              className={`badge-circle ${ach.unlocked ? 'teal' : 'locked'}`}
-              title={`${ach.title}: ${ach.unlocked ? 'Desbloqueada' : 'Bloqueada'}`}
-            >
-              {ach.unlocked ? ach.icon : '🔒'}
-            </div>
-          ))}
-        </div>
-      </motion.div>
+      <AchievementsSummaryCard
+        unlockedCount={unlockedBadgesCount}
+        totalCount={evaluatedAchs.length}
+        achievements={evaluatedAchs}
+        onOpen={() => setActiveModal(activeModal === 'achievements' ? null : 'achievements')}
+      />
 
       {/* Modal/Gaveta de Conquistas */}
-      <AnimatePresence>
-        {activeModal === 'achievements' && (
-          <motion.div
-            key="modal-achievements"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#12151F]/80 backdrop-blur-sm"
-          >
-            <div className="fixed inset-0" onClick={() => setActiveModal(null)} />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-md bg-[#1B1F2E] border border-[#2C3247] rounded-3xl p-5 shadow-2xl max-h-[85vh] overflow-y-auto"
-            >
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#2C3247]">
-                <h3 className="font-baloo text-lg font-bold text-[#F2F1EA]">Conquistas e Emblemas</h3>
-                <button
-                  type="button"
-                  onClick={() => setActiveModal(null)}
-                  className="text-[#9096AC] hover:text-[#F2F1EA] text-sm px-2 py-1 rounded-lg bg-[#232840] transition-colors"
-                >
-                  ✕ Fechar
-                </button>
-              </div>
-              <AchievementsSection userState={userState} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AppDialogModal
+        isOpen={activeModal === 'achievements'}
+        onClose={() => setActiveModal(null)}
+        title="Conquistas e Emblemas"
+      >
+        <AchievementsSection userState={userState} />
+      </AppDialogModal>
 
       {/* Modal/Gaveta de Estatísticas */}
-      <AnimatePresence>
-        {activeModal === 'stats' && (
-          <motion.div
-            key="modal-stats"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#12151F]/80 backdrop-blur-sm"
-          >
-            <div className="fixed inset-0" onClick={() => setActiveModal(null)} />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: 'spring' as const, damping: 25, stiffness: 300 }}
-              className="relative z-10 w-full max-w-md bg-[#1B1F2E] border border-[#2C3247] rounded-3xl p-5 shadow-2xl max-h-[85vh] overflow-y-auto"
-            >
-              <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#2C3247]">
-                <h3 className="font-baloo text-lg font-bold text-[#F2F1EA]">Seu Desempenho</h3>
-                <button
-                  type="button"
-                  onClick={() => setActiveModal(null)}
-                  className="text-[#9096AC] hover:text-[#F2F1EA] text-sm px-2 py-1 rounded-lg bg-[#232840] transition-colors"
-                >
-                  ✕ Fechar
-                </button>
-              </div>
-              <StatsSection userState={userState} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <AppDialogModal
+        isOpen={activeModal === 'stats'}
+        onClose={() => setActiveModal(null)}
+        title="Seu Desempenho"
+      >
+        <StatsSection userState={userState} />
+      </AppDialogModal>
     </div>
   );
 }

@@ -1,31 +1,19 @@
 import React, { useState } from 'react';
-import { 
-  X, 
-  User, 
-  Volume2, 
-  VolumeX, 
-  RotateCcw, 
-  Sparkles, 
-  Flame, 
-  Award, 
-  Wifi, 
-  ShieldCheck,
-  AlertTriangle,
-  Code2,
-  Terminal,
-  Cpu,
-  Zap
-} from 'lucide-react';
-import { UserLearningState } from '@/types/learning';
+import { X, User } from 'lucide-react';
+import { UserLearningState, AvatarMood } from '@/types/learning';
 import { Badge } from '@/components/ui/Badge';
 import { sanitizeUserName } from '@/utils/sanitize';
+import { calculateLevelProgress } from '@/features/learning/progression';
+import { DevModeSelector } from './DevModeSelector';
+import { ProfileStatsOverview } from './ProfileStatsOverview';
+import { AppPreferencesSection } from './AppPreferencesSection';
 
 interface ProfileSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   userState: UserLearningState;
   onUpdateName: (name: string) => void;
-  onUpdateAvatar: (mood: 'happy' | 'waving' | 'thinking' | 'celebrating') => void;
+  onUpdateAvatar: (mood: AvatarMood) => void;
   onToggleSound: () => void;
   onResetProgress: () => void;
 }
@@ -41,7 +29,6 @@ export function ProfileSettingsModal({
 }: ProfileSettingsModalProps) {
   const [editingName, setEditingName] = useState(userState.userName);
   const [isEditing, setIsEditing] = useState(false);
-  const [confirmReset, setConfirmReset] = useState(false);
 
   if (!isOpen) return null;
 
@@ -55,21 +42,8 @@ export function ProfileSettingsModal({
     }
   };
 
-  const devModes: Array<{ mood: 'happy' | 'waving' | 'thinking' | 'celebrating'; label: string; icon: React.ReactNode }> = [
-    { mood: 'happy', label: 'Focado', icon: <Terminal className="h-4 w-4" /> },
-    { mood: 'waving', label: 'Explorador', icon: <Code2 className="h-4 w-4" /> },
-    { mood: 'thinking', label: 'Curioso', icon: <Cpu className="h-4 w-4" /> },
-    { mood: 'celebrating', label: 'Inovador', icon: <Zap className="h-4 w-4" /> },
-  ];
-
-  // Cálculo de nível
-  const currentLevel = Math.floor(userState.xp / 100) + 1;
-  const levelTitle = currentLevel === 1 
-    ? 'Aprendiz de Sintaxe' 
-    : currentLevel === 2 
-    ? 'Arquiteto Web' 
-    : 'Engenheiro Frontend';
-
+  // Nível oficial padronizado com o sistema RPG
+  const playerLevel = calculateLevelProgress(userState.xp).currentLevel;
   const firstLetter = (userState.userName || 'D').charAt(0).toUpperCase();
 
   return (
@@ -78,7 +52,7 @@ export function ProfileSettingsModal({
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal / Bottom Sheet Container */}
-      <div 
+      <div
         role="dialog"
         aria-modal="true"
         aria-label="Perfil e Configurações"
@@ -119,8 +93,8 @@ export function ProfileSettingsModal({
 
             <div className="flex-1 text-center sm:text-left w-full">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
-                <Badge variant="electric">Nível {currentLevel}</Badge>
-                <span className="text-xs font-semibold text-[#94A3B8]">&bull; {levelTitle}</span>
+                <Badge variant="electric">Nível {playerLevel.level}</Badge>
+                <span className="text-xs font-semibold text-[#94A3B8]">&bull; {playerLevel.title}</span>
               </div>
 
               {isEditing ? (
@@ -163,170 +137,30 @@ export function ProfileSettingsModal({
           </div>
 
           {/* Modo de Foco / Perfil Dev */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-2.5">
-              Modo de Foco do Desenvolvedor
-            </label>
-            <div className="grid grid-cols-4 gap-2.5">
-              {devModes.map((item) => {
-                const isSelected = (userState.avatarMood || 'happy') === item.mood;
-                return (
-                  <button
-                    key={item.mood}
-                    type="button"
-                    onClick={() => onUpdateAvatar(item.mood)}
-                    className={`flex flex-col items-center p-2.5 rounded-2xl border transition-all cursor-pointer ${
-                      isSelected
-                        ? 'border-[#3B82F6] bg-[#1E3A8A]/40 text-[#60A5FA] shadow-[0_0_15px_rgba(59,130,246,0.25)]'
-                        : 'border-[#1E293B] bg-[#0A0E1A] text-[#64748B] hover:border-[#334155] hover:text-[#94A3B8]'
-                    }`}
-                  >
-                    <div className="p-2 rounded-xl mb-1">{item.icon}</div>
-                    <span className="text-[11px] font-bold">
-                      {item.label}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          <DevModeSelector
+            currentMood={userState.avatarMood}
+            onSelectMood={onUpdateAvatar}
+          />
 
           {/* Estatísticas Rápidas do Perfil */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-2.5">
-              Progresso Acumulado
-            </label>
-            <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 rounded-2xl border border-[#1E293B] bg-[#0A0E1A] text-center">
-                <div className="inline-flex p-2 rounded-xl bg-[#1E3A8A]/40 text-[#38BDF8] mb-1">
-                  <Sparkles className="h-4 w-4 fill-current" />
-                </div>
-                <div className="text-lg font-black text-[#F8FAFC]">{userState.xp}</div>
-                <div className="text-[10px] font-bold text-[#64748B] uppercase">XP Total</div>
-              </div>
+          <ProfileStatsOverview
+            xp={userState.xp}
+            streakDays={userState.streakDays}
+            completedModulesCount={userState.completedModulesCount}
+          />
 
-              <div className="p-3 rounded-2xl border border-[#1E293B] bg-[#0A0E1A] text-center">
-                <div className="inline-flex p-2 rounded-xl bg-[#7C2D12]/30 text-[#FB923C] mb-1">
-                  <Flame className="h-4 w-4 fill-current" />
-                </div>
-                <div className="text-lg font-black text-[#F8FAFC]">{userState.streakDays} d</div>
-                <div className="text-[10px] font-bold text-[#64748B] uppercase">Sequência</div>
-              </div>
-
-              <div className="p-3 rounded-2xl border border-[#1E293B] bg-[#0A0E1A] text-center">
-                <div className="inline-flex p-2 rounded-xl bg-[#0F766E]/30 text-[#2DD4BF] mb-1">
-                  <Award className="h-4 w-4" />
-                </div>
-                <div className="text-lg font-black text-[#F8FAFC]">{userState.completedModulesCount}</div>
-                <div className="text-[10px] font-bold text-[#64748B] uppercase">Módulos</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Preferências do Aplicativo */}
-          <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-[#94A3B8] mb-2.5">
-              Configurações
-            </label>
-            <div className="space-y-2.5">
-              {/* Efeitos Sonoros */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl border border-[#1E293B] bg-[#0A0E1A]">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-[#0F172A] border border-[#1E293B] text-[#94A3B8]">
-                    {userState.soundEnabled !== false ? (
-                      <Volume2 className="h-4 w-4 text-[#38BDF8]" />
-                    ) : (
-                      <VolumeX className="h-4 w-4 text-[#64748B]" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#F8FAFC]">Feedback Sonoro de Conclusão</div>
-                    <div className="text-[11px] text-[#64748B]">Áudio ao acertar desafios práticos</div>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={onToggleSound}
-                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${
-                    userState.soundEnabled !== false ? 'bg-[#2563EB]' : 'bg-[#334155]'
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform transform absolute top-1 ${
-                      userState.soundEnabled !== false ? 'right-1' : 'left-1'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {/* Status Offline PWA */}
-              <div className="flex items-center justify-between p-3.5 rounded-2xl border border-[#1E293B] bg-[#0A0E1A]">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-[#0F172A] border border-[#1E293B] text-[#2DD4BF]">
-                    <Wifi className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#F8FAFC]">Modo Offline Ativo</div>
-                    <div className="text-[11px] text-[#64748B]">Armazenamento local em tempo real</div>
-                  </div>
-                </div>
-                <Badge variant="cyan" className="text-[10px]">
-                  <ShieldCheck className="h-3 w-3" />
-                  Ativo
-                </Badge>
-              </div>
-            </div>
-          </div>
-
-          {/* Zona de Reiniciar Progresso */}
-          <div className="pt-2 border-t border-[#1E293B]">
-            {confirmReset ? (
-              <div className="p-4 rounded-2xl border border-[#EF4444]/40 bg-[#450A0A]/40 space-y-3">
-                <div className="flex items-start gap-2.5">
-                  <AlertTriangle className="h-5 w-5 text-[#EF4444] shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-xs font-bold text-[#FCA5A5]">Tem certeza que deseja reiniciar?</h4>
-                    <p className="text-[11px] text-[#F87171] mt-0.5">
-                      Todo o seu XP ({userState.xp}), lições completadas e progresso voltarão ao início.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onResetProgress();
-                      setConfirmReset(false);
-                      onClose();
-                    }}
-                    className="flex-1 py-2 rounded-xl bg-[#DC2626] text-white text-xs font-bold hover:bg-[#B91C1C] transition-colors cursor-pointer"
-                  >
-                    Sim, reiniciar tudo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmReset(false)}
-                    className="px-3 py-2 rounded-xl bg-[#1E293B] text-[#94A3B8] text-xs font-bold hover:bg-[#334155] transition-colors cursor-pointer"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setConfirmReset(true)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-[#F87171] hover:bg-[#450A0A]/30 border border-transparent hover:border-[#EF4444]/30 transition-colors cursor-pointer"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                <span>Reiniciar meu progresso do curso</span>
-              </button>
-            )}
-          </div>
+          {/* Preferências do Aplicativo & Zona de Reiniciar */}
+          <AppPreferencesSection
+            soundEnabled={userState.soundEnabled}
+            totalXp={userState.xp}
+            onToggleSound={onToggleSound}
+            onResetProgress={onResetProgress}
+            onCloseModal={onClose}
+          />
         </div>
 
         {/* Footer info com Safe Area Bottom */}
-        <div 
+        <div
           className="px-6 py-3 border-t border-[#1E293B] bg-[#070B14] flex items-center justify-between text-[11px] text-[#64748B]"
           style={{
             paddingBottom: 'max(12px, calc(env(safe-area-inset-bottom, 0px) + 8px))',

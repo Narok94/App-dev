@@ -5,4 +5,8 @@ export * from './QuestHeader';
 export * from './CodeGrimoire';
 export * from './ConceptStepView';
 export * from './QuizStepView';
+export * from './QuizOptionsList';
+export * from './QuizFeedbackPanel';
+export * from './QuizActionButtons';
+export * from './quizStepUtils';
 export * from './QuestVictoryView';

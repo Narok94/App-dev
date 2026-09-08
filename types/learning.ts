@@ -189,6 +189,8 @@ export interface Quest {
 
 export type InteractiveLesson = Quest;
 
+export type AvatarMood = 'happy' | 'waving' | 'thinking' | 'celebrating';
+
 export interface UserLearningState {
   xp: number;
   streakDays: number;
@@ -199,7 +201,7 @@ export interface UserLearningState {
   completedLessonIds?: string[];
   completedQuestIds?: string[];
   userName: string;
-  avatarMood?: 'happy' | 'waving' | 'thinking' | 'celebrating';
+  avatarMood?: AvatarMood;
   dailyLessonsGoal?: number;
   soundEnabled?: boolean;
   hapticEnabled?: boolean;
