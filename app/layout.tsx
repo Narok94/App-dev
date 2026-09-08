@@ -12,7 +12,7 @@ export default function RootLayout({
   }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F5F0] text-[#2B231D] selection:bg-[#E2D8CC] selection:text-[#2B231D] font-sans antialiased">
+    <div className="flex min-h-screen min-h-[100dvh] flex-col bg-[#12151F] text-[#F2F1EA] selection:bg-[#C8F03D] selection:text-[#12151F] font-sans antialiased">
       {children}
     </div>
   );

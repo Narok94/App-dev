@@ -52,7 +52,7 @@ export default function AppPage() {
   };
 
   return (
-    <>
+    <div className="w-full min-h-screen min-h-[100dvh] bg-[#12151F] text-[#F2F1EA] relative flex flex-col items-center selection:bg-[#C8F03D] selection:text-[#12151F]">
       <AnimatePresence mode="wait">
         {activeLesson ? (
           <motion.div
@@ -60,8 +60,8 @@ export default function AppPage() {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.3 }}
-            className="h-[100dvh] max-h-[100dvh] w-full bg-[#12151F] text-[#F2F1EA] flex flex-col items-center justify-center overflow-hidden selection:bg-[#C8F03D] selection:text-[#12151F] relative"
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden relative"
           >
             <div className="w-full max-w-[440px] h-full flex flex-col">
               <LessonPlayer
@@ -80,8 +80,8 @@ export default function AppPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="min-h-screen bg-[#12151F] text-[#F2F1EA] flex flex-col items-center selection:bg-[#C8F03D] selection:text-[#12151F]"
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+            className="w-full min-h-screen min-h-[100dvh] flex flex-col items-center"
             style={{
               paddingTop: 'var(--page-padding-top)',
               paddingBottom: 'var(--page-padding-bottom)',
@@ -156,7 +156,7 @@ export default function AppPage() {
         }}
         completedLessonIds={userState.completedLessonIds}
       />
-    </>
+    </div>
   );
 }
 
