@@ -12,7 +12,7 @@ interface LearningTrailCardProps {
 
 const POSITIONS: Array<'center' | 'right' | 'left'> = ['center', 'right', 'center', 'left'];
 
-export function LearningTrailCard({
+function LearningTrailCardComponent({
   modules,
   currentModule,
   currentModuleId,
@@ -96,3 +96,5 @@ export function LearningTrailCard({
     </div>
   );
 }
+
+export const LearningTrailCard = React.memo(LearningTrailCardComponent);

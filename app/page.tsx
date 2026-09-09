@@ -1,19 +1,37 @@
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { HomeScreen } from '@/features/home';
-import { 
-  ModuleBottomSheet,
-  useLearningProgress 
-} from '@/features/learning';
-import { ProfileSettingsModal } from '@/components/profile/ProfileSettingsModal';
-import { LevelUpModal } from '@/components/ui/LevelUpModal';
-import { AchievementToast } from '@/components/ui/AchievementToast';
+import { useLearningProgress } from '@/features/learning';
 
 const LessonPlayer = lazy(() =>
   import('@/features/learning/components/InteractiveLesson/LessonPlayer').then((m) => ({
     default: m.LessonPlayer,
+  }))
+);
+
+const ProfileSettingsModal = lazy(() =>
+  import('@/components/profile/ProfileSettingsModal').then((m) => ({
+    default: m.ProfileSettingsModal,
+  }))
+);
+
+const LevelUpModal = lazy(() =>
+  import('@/components/ui/LevelUpModal').then((m) => ({
+    default: m.LevelUpModal,
+  }))
+);
+
+const AchievementToast = lazy(() =>
+  import('@/components/ui/AchievementToast').then((m) => ({
+    default: m.AchievementToast,
+  }))
+);
+
+const ModuleBottomSheet = lazy(() =>
+  import('@/features/learning/components/ModuleBottomSheet').then((m) => ({
+    default: m.ModuleBottomSheet,
   }))
 );
 
@@ -48,13 +66,29 @@ export default function AppPage() {
   } = useLearningProgress();
 
   // Ação direta: "Continuar aprendendo" abre imediatamente a próxima lição pendente!
-  const handleContinueLearning = () => {
+  const handleContinueLearning = useCallback(() => {
     if (nextPendingLesson?.lesson) {
       startLesson(nextPendingLesson.lesson.id);
     } else {
       handleSelectModule(currentModule);
     }
-  };
+  }, [nextPendingLesson, startLesson, handleSelectModule, currentModule]);
+
+  const handleOpenProfile = useCallback(() => {
+    setIsProfileOpen(true);
+  }, []);
+
+  const handleCloseProfile = useCallback(() => {
+    setIsProfileOpen(false);
+  }, []);
+
+  const handleStartLessonFromSheet = useCallback(
+    (lessonId: string) => {
+      closeModuleModal();
+      startLesson(lessonId);
+    },
+    [closeModuleModal, startLesson]
+  );
 
   return (
     <div className="w-full min-h-screen min-h-[100dvh] bg-[#12151F] text-[#F2F1EA] relative flex flex-col items-center selection:bg-[#C8F03D] selection:text-[#12151F]">
@@ -111,7 +145,7 @@ export default function AppPage() {
                 avatarMood={userState.avatarMood}
                 levelProgress={levelProgress}
                 xpDelta={recentXpDelta}
-                onOpenProfile={() => setIsProfileOpen(true)}
+                onOpenProfile={handleOpenProfile}
               />
 
               <HomeScreen
@@ -130,40 +164,53 @@ export default function AppPage() {
         )}
       </AnimatePresence>
 
-      {/* Global Level-up Modal */}
-      <LevelUpModal
-        level={levelUpModalLevel}
-        isOpen={Boolean(levelUpModalLevel)}
-        onClose={closeLevelUpModal}
-      />
+      {/* Global Level-up Modal (Carregado sob demanda com lazy/Suspense) */}
+      {Boolean(levelUpModalLevel) && (
+        <Suspense fallback={null}>
+          <LevelUpModal
+            level={levelUpModalLevel}
+            isOpen={Boolean(levelUpModalLevel)}
+            onClose={closeLevelUpModal}
+          />
+        </Suspense>
+      )}
 
-      {/* Global Achievement Toast */}
-      <AchievementToast
-        achievement={recentAchievement}
-        onClose={closeAchievementToast}
-      />
+      {/* Global Achievement Toast (Carregado sob demanda com lazy/Suspense) */}
+      {Boolean(recentAchievement) && (
+        <Suspense fallback={null}>
+          <AchievementToast
+            achievement={recentAchievement}
+            onClose={closeAchievementToast}
+          />
+        </Suspense>
+      )}
 
-      {/* Painel / Bottom Sheet de Perfil & Configurações */}
-      <ProfileSettingsModal
-        isOpen={isProfileOpen}
-        onClose={() => setIsProfileOpen(false)}
-        userState={userState}
-        onUpdateName={updateUserName}
-        onUpdateAvatar={updateAvatarMood}
-        onToggleSound={toggleSound}
-        onResetProgress={resetProgress}
-      />
+      {/* Painel / Bottom Sheet de Perfil & Configurações (Carregado sob demanda com lazy/Suspense) */}
+      {isProfileOpen && (
+        <Suspense fallback={null}>
+          <ProfileSettingsModal
+            isOpen={isProfileOpen}
+            onClose={handleCloseProfile}
+            userState={userState}
+            onUpdateName={updateUserName}
+            onUpdateAvatar={updateAvatarMood}
+            onToggleSound={toggleSound}
+            onResetProgress={resetProgress}
+          />
+        </Suspense>
+      )}
 
-      {/* Modal / Bottom Sheet de Detalhes do Módulo */}
-      <ModuleBottomSheet
-        module={selectedModule}
-        onClose={closeModuleModal}
-        onStartLesson={(lessonId) => {
-          closeModuleModal();
-          startLesson(lessonId);
-        }}
-        completedLessonIds={userState.completedLessonIds}
-      />
+      {/* Modal / Bottom Sheet de Detalhes do Módulo (Carregado sob demanda com lazy/Suspense) */}
+      {Boolean(selectedModule) && (
+        <Suspense fallback={null}>
+          <ModuleBottomSheet
+            module={selectedModule}
+            onClose={closeModuleModal}
+            onStartLesson={handleStartLessonFromSheet}
+            completedLessonIds={userState.completedLessonIds}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

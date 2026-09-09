@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { UserLearningState, LearningModule, LessonPreview } from '@/types/learning';
 import { LevelProgress, evaluateAchievements } from '@/features/learning/progression';
 import { AppDialogModal } from '@/components/ui/AppDialogModal';
@@ -24,7 +24,7 @@ export interface HomeScreenProps {
   onSelectModule: (mod: LearningModule) => void;
 }
 
-export function HomeScreen({
+function HomeScreenComponent({
   userState,
   modules,
   currentModule,
@@ -38,15 +38,23 @@ export function HomeScreen({
   const completedToday = (userState.completedLessonIds?.length || 0) > 0;
   const completedLessonsCount = userState.completedLessonIds?.length || 0;
 
-  const evaluatedAchs = evaluateAchievements(userState);
-  const unlockedBadgesCount = evaluatedAchs.filter((a) => a.unlocked).length;
-
-  const calculatedLessonXp = Math.round(
-    nextPendingLesson.module.xpReward / Math.max(nextPendingLesson.module.lessons.length, 1)
+  const evaluatedAchs = useMemo(() => evaluateAchievements(userState), [userState]);
+  const unlockedBadgesCount = useMemo(
+    () => evaluatedAchs.filter((a) => a.unlocked).length,
+    [evaluatedAchs]
   );
 
+  const calculatedLessonXp = useMemo(() => {
+    return Math.round(
+      nextPendingLesson.module.xpReward / Math.max(nextPendingLesson.module.lessons.length, 1)
+    );
+  }, [nextPendingLesson.module.xpReward, nextPendingLesson.module.lessons.length]);
+
   const greetingName = userState.userName ? userState.userName : 'explorador';
-  const isEraCompleted = modules.length > 0 && modules.every((m) => m.status === 'completed');
+  const isEraCompleted = useMemo(
+    () => modules.length > 0 && modules.every((m) => m.status === 'completed'),
+    [modules]
+  );
 
   return (
     <div className="flex flex-col gap-[18px] w-full">
@@ -111,7 +119,7 @@ export function HomeScreen({
         onClose={() => setActiveModal(null)}
         title="Conquistas e Emblemas"
       >
-        <AchievementsSection userState={userState} />
+        {activeModal === 'achievements' && <AchievementsSection userState={userState} />}
       </AppDialogModal>
 
       {/* Modal/Gaveta de Estatísticas */}
@@ -120,8 +128,11 @@ export function HomeScreen({
         onClose={() => setActiveModal(null)}
         title="Seu Desempenho"
       >
-        <StatsSection userState={userState} />
+        {activeModal === 'stats' && <StatsSection userState={userState} />}
       </AppDialogModal>
     </div>
   );
 }
+
+export const HomeScreen = React.memo(HomeScreenComponent);
+

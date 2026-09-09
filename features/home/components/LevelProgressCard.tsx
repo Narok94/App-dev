@@ -7,7 +7,7 @@ interface LevelProgressCardProps {
   userXp: number;
 }
 
-export function LevelProgressCard({ levelProgress, userXp }: LevelProgressCardProps) {
+function LevelProgressCardComponent({ levelProgress, userXp }: LevelProgressCardProps) {
   const currentLevel = levelProgress.currentLevel;
 
   return (
@@ -64,3 +64,5 @@ export function LevelProgressCard({ levelProgress, userXp }: LevelProgressCardPr
     </div>
   );
 }
+
+export const LevelProgressCard = React.memo(LevelProgressCardComponent);

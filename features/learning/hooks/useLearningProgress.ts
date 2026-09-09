@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { LearningModule, UserLearningState, InteractiveLesson, Era } from '@/types/learning';
 import {
   getAllModules,
@@ -96,19 +96,24 @@ export function useLearningProgress() {
     }
   }, [userState, modules]);
 
-  // Localiza o módulo corrente em andamento
-  const currentModule =
-    modules.find((m) => m.id === userState.currentModuleId) ||
-    modules.find((m) => m.status === 'current') ||
-    modules[0];
+  // Localiza o módulo corrente em andamento (memoizado para evitar buscas lineares redundantes)
+  const currentModule = useMemo(() => {
+    return (
+      modules.find((m) => m.id === userState.currentModuleId) ||
+      modules.find((m) => m.status === 'current') ||
+      modules[0]
+    );
+  }, [modules, userState.currentModuleId]);
 
-  // Cálculo da porcentagem total de progresso
-  const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
-  const completedLessonsCount = userState.completedLessonIds?.length || 0;
-  const progressPercent = totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
+  // Cálculo da porcentagem total de progresso (memoizado)
+  const progressPercent = useMemo(() => {
+    const totalLessons = modules.reduce((acc, m) => acc + m.lessons.length, 0);
+    const completedLessonsCount = userState.completedLessonIds?.length || 0;
+    return totalLessons > 0 ? Math.round((completedLessonsCount / totalLessons) * 100) : 0;
+  }, [modules, userState.completedLessonIds]);
 
-  // Localiza a próxima lição / quest pendente de conclusão
-  const getNextPendingLesson = () => {
+  // Localiza a próxima lição / quest pendente de conclusão (memoizado para manter estabilidade referencial)
+  const nextPendingLesson = useMemo(() => {
     const currentMod = currentModule;
     const pendingInCurrent = currentMod?.lessons.find((l) => !l.isCompleted);
     if (pendingInCurrent && currentMod) {
@@ -124,22 +129,20 @@ export function useLearningProgress() {
 
     const fallbackMod = modules[0];
     return { lesson: fallbackMod.lessons[0], module: fallbackMod };
-  };
-
-  const nextPendingLesson = getNextPendingLesson();
+  }, [modules, currentModule]);
 
   // Abre modal com detalhes do módulo
-  const handleSelectModule = (mod: LearningModule) => {
+  const handleSelectModule = useCallback((mod: LearningModule) => {
     setSelectedModule(mod);
-  };
+  }, []);
 
   // Fecha modal de detalhes do módulo
-  const closeModuleModal = () => {
+  const closeModuleModal = useCallback(() => {
     setSelectedModule(null);
-  };
+  }, []);
 
   // Inicia uma Quest interativa diretamente pelo ID
-  const startLesson = (lessonId?: string) => {
+  const startLesson = useCallback((lessonId?: string) => {
     let quest: InteractiveLesson | null = null;
     const targetId = lessonId || nextPendingLesson.lesson.id;
     if (targetId) {
@@ -153,28 +156,28 @@ export function useLearningProgress() {
       setActiveLesson(quest);
       setSelectedModule(null); // Fecha modal caso esteja aberto
     }
-  };
+  }, [nextPendingLesson, userState.currentModuleId]);
 
   // Atualiza nome do usuário com sanitização estrita contra XSS e injeções
-  const updateUserName = (name: string) => {
+  const updateUserName = useCallback((name: string) => {
     const sanitized = sanitizeUserName(name, userState.userName);
     if (sanitized) {
       setUserState((prev) => ({ ...prev, userName: sanitized }));
     }
-  };
+  }, [userState.userName]);
 
   // Atualiza avatar do usuário
-  const updateAvatarMood = (mood: 'happy' | 'waving' | 'thinking' | 'celebrating') => {
+  const updateAvatarMood = useCallback((mood: 'happy' | 'waving' | 'thinking' | 'celebrating') => {
     setUserState((prev) => ({ ...prev, avatarMood: mood }));
-  };
+  }, []);
 
   // Alterna som
-  const toggleSound = () => {
+  const toggleSound = useCallback(() => {
     setUserState((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }));
-  };
+  }, []);
 
   // Reinicia o progresso com segurança preservando o novo catálogo de currículo
-  const resetProgress = () => {
+  const resetProgress = useCallback(() => {
     const baseModules = getAllModules();
     const freshModules = baseModules.map((m) => ({
       ...m,
@@ -200,10 +203,10 @@ export function useLearningProgress() {
     setUserState(freshUserState);
     setActiveLesson(null);
     setSelectedModule(null);
-  };
+  }, [userState.userName]);
 
   // Concede XP de uma etapa da quest de forma atômica e persistente
-  const awardStepXp = (amount: number) => {
+  const awardStepXp = useCallback((amount: number) => {
     if (!isValidXp(amount) || amount <= 0) return;
 
     // Efeito sonoro de ganho de XP
@@ -241,10 +244,10 @@ export function useLearningProgress() {
       }
       return nextState;
     });
-  };
+  }, [userState.soundEnabled]);
 
   // Penaliza com desconto exato de XP (padrão 5 XP), nunca ficando abaixo de 0
-  const penalizeStepXp = (penalty: number = XP_RULES.WRONG_ANSWER_PENALTY) => {
+  const penalizeStepXp = useCallback((penalty: number = XP_RULES.WRONG_ANSWER_PENALTY) => {
     const penaltyAmount = Math.abs(penalty);
     if (!Number.isFinite(penaltyAmount)) return;
 
@@ -261,24 +264,24 @@ export function useLearningProgress() {
       const nextXp = Math.max(0, prev.xp - penaltyAmount);
       return { ...prev, xp: nextXp };
     });
-  };
+  }, [userState.soundEnabled]);
 
   // Permite ajuste arbitrário de XP garantindo nunca ser negativo
-  const addXp = (amount: number) => {
+  const addXp = useCallback((amount: number) => {
     if (amount > 0) {
       awardStepXp(amount);
     } else if (amount < 0) {
       penalizeStepXp(Math.abs(amount));
     }
-  };
+  }, [awardStepXp, penalizeStepXp]);
 
   // Sai da lição/quest interativa e volta à trilha
-  const exitLesson = () => {
+  const exitLesson = useCallback(() => {
     setActiveLesson(null);
-  };
+  }, []);
 
   // Conclui a lição/quest com sucesso e calcula desbloqueios sem duplicar XP
-  const completeLesson = (lessonId: string, _xpEarned?: number) => {
+  const completeLesson = useCallback((lessonId: string, _xpEarned?: number) => {
     playSuccessSound(userState.soundEnabled !== false);
 
     // 1. Atualiza IDs de aulas/quests completadas
@@ -360,12 +363,20 @@ export function useLearningProgress() {
 
     // Fecha o player da lição e volta para a tela de aprendizado
     setActiveLesson(null);
-  };
+  }, [userState.soundEnabled, userState.completedLessonIds, userState.completedQuestIds, userState.completedModulesCount, userState.currentModuleId, modules]);
 
-  const levelProgress: LevelProgress = calculateLevelProgress(userState.xp);
+  const levelProgress = useMemo(
+    () => calculateLevelProgress(userState.xp),
+    [userState.xp]
+  );
+
+  const currentEra = useMemo(() => getActiveEra(), []);
+
+  const closeLevelUpModal = useCallback(() => setLevelUpModalLevel(null), []);
+  const closeAchievementToast = useCallback(() => setRecentAchievement(null), []);
 
   return {
-    currentEra: getActiveEra(),
+    currentEra,
     modules,
     userState,
     currentModule,
@@ -374,8 +385,8 @@ export function useLearningProgress() {
     levelUpModalLevel,
     recentAchievement,
     recentXpDelta,
-    closeLevelUpModal: () => setLevelUpModalLevel(null),
-    closeAchievementToast: () => setRecentAchievement(null),
+    closeLevelUpModal,
+    closeAchievementToast,
     selectedModule,
     activeLesson,
     activeQuest: activeLesson,

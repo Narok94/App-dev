@@ -12,7 +12,7 @@ interface HeroMissionCardProps {
   onContinueLearning: () => void;
 }
 
-export function HeroMissionCard({
+function HeroMissionCardComponent({
   nextPendingLesson,
   completedLessonsCount,
   calculatedLessonXp,
@@ -46,3 +46,5 @@ export function HeroMissionCard({
     </div>
   );
 }
+
+export const HeroMissionCard = React.memo(HeroMissionCardComponent);

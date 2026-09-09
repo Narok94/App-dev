@@ -15,7 +15,7 @@ interface HeaderProps {
   onOpenProfile: () => void;
 }
 
-export function Header({
+function HeaderComponent({
   xp = 0,
   streakDays = 1,
   levelProgress,
@@ -124,4 +124,6 @@ export function Header({
     </header>
   );
 }
+
+export const Header = React.memo(HeaderComponent);
 

@@ -9,7 +9,7 @@ interface StatsGridProps {
   onOpenAchievements: () => void;
 }
 
-export function StatsGrid({
+function StatsGridComponent({
   streakDays,
   completedToday,
   unlockedBadgesCount,
@@ -51,3 +51,5 @@ export function StatsGrid({
     </div>
   );
 }
+
+export const StatsGrid = React.memo(StatsGridComponent);

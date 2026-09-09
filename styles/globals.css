@@ -51,6 +51,8 @@ html {
   min-height: 100dvh;
   color-scheme: dark;
   overscroll-behavior-y: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -62,6 +64,8 @@ body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
@@ -408,11 +412,13 @@ h1, h2, h3, .display, .font-baloo {
   max-height: 0;
   transition: max-height 0.25s ease, margin-top 0.25s ease;
   margin-top: 0;
+  contain: content;
 }
 
 .path-zigzag.open {
   max-height: 600px;
   margin-top: 16px;
+  contain: none;
 }
 
 .node-wrap {
