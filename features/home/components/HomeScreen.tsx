@@ -90,6 +90,9 @@ function HomeScreenComponent({
         onOpenAchievements={() =>
           setActiveModal(activeModal === 'achievements' ? null : 'achievements')
         }
+        onOpenStats={() =>
+          setActiveModal(activeModal === 'stats' ? null : 'stats')
+        }
       />
 
       {/* 5. Trilha de Aprendizado (Compacta por padrão, expansível em zigue-zague) */}
@@ -126,9 +129,15 @@ function HomeScreenComponent({
       <AppDialogModal
         isOpen={activeModal === 'stats'}
         onClose={() => setActiveModal(null)}
-        title="Seu Desempenho"
+        title="Seu Desempenho e Estatísticas"
       >
-        {activeModal === 'stats' && <StatsSection userState={userState} />}
+        {activeModal === 'stats' && (
+          <StatsSection
+            userState={userState}
+            modules={modules}
+            levelProgress={levelProgress}
+          />
+        )}
       </AppDialogModal>
     </div>
   );

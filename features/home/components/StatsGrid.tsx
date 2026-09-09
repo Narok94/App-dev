@@ -7,6 +7,7 @@ interface StatsGridProps {
   unlockedBadgesCount: number;
   totalBadgesCount: number;
   onOpenAchievements: () => void;
+  onOpenStats?: () => void;
 }
 
 function StatsGridComponent({
@@ -15,10 +16,20 @@ function StatsGridComponent({
   unlockedBadgesCount,
   totalBadgesCount,
   onOpenAchievements,
+  onOpenStats,
 }: StatsGridProps) {
   return (
     <div className="stats">
-      <motion.div whileHover={{ y: -2 }} className="stat-card">
+      <motion.div
+        whileHover={{ y: -2 }}
+        whileTap={onOpenStats ? { scale: 0.97 } : undefined}
+        className={`stat-card ${onOpenStats ? 'cursor-pointer hover:border-[#FB923C]/40 transition-colors' : ''}`}
+        onClick={onOpenStats}
+        role={onOpenStats ? 'button' : undefined}
+        tabIndex={onOpenStats ? 0 : undefined}
+        onKeyDown={(e) => onOpenStats && e.key === 'Enter' && onOpenStats()}
+        title={onOpenStats ? 'Ver estatísticas de sequência e progresso' : undefined}
+      >
         <span className="stat-icon">🔥</span>
         <div className="stat-value">{streakDays}</div>
         <div className="stat-label">
@@ -26,7 +37,16 @@ function StatsGridComponent({
         </div>
       </motion.div>
 
-      <motion.div whileHover={{ y: -2 }} className="stat-card">
+      <motion.div
+        whileHover={{ y: -2 }}
+        whileTap={onOpenStats ? { scale: 0.97 } : undefined}
+        className={`stat-card ${onOpenStats ? 'cursor-pointer hover:border-[#38BDF8]/40 transition-colors' : ''}`}
+        onClick={onOpenStats}
+        role={onOpenStats ? 'button' : undefined}
+        tabIndex={onOpenStats ? 0 : undefined}
+        onKeyDown={(e) => onOpenStats && e.key === 'Enter' && onOpenStats()}
+        title={onOpenStats ? 'Ver estatísticas detalhadas de desempenho' : undefined}
+      >
         <span className="stat-icon">🎯</span>
         <div className="stat-value">{completedToday ? '1/1' : '0/1'}</div>
         <div className="stat-label">meta de hoje</div>

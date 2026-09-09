@@ -192,6 +192,7 @@ export default function AppPage() {
             isOpen={isProfileOpen}
             onClose={handleCloseProfile}
             userState={userState}
+            modules={modules}
             onUpdateName={updateUserName}
             onUpdateAvatar={updateAvatarMood}
             onToggleSound={toggleSound}

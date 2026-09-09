@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, User } from 'lucide-react';
-import { UserLearningState, AvatarMood } from '@/types/learning';
+import { UserLearningState, AvatarMood, LearningModule } from '@/types/learning';
 import { Badge } from '@/components/ui/Badge';
 import { sanitizeUserName } from '@/utils/sanitize';
 import { calculateLevelProgress } from '@/features/learning/progression';
@@ -12,6 +12,7 @@ interface ProfileSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   userState: UserLearningState;
+  modules?: LearningModule[];
   onUpdateName: (name: string) => void;
   onUpdateAvatar: (mood: AvatarMood) => void;
   onToggleSound: () => void;
@@ -22,6 +23,7 @@ export function ProfileSettingsModal({
   isOpen,
   onClose,
   userState,
+  modules = [],
   onUpdateName,
   onUpdateAvatar,
   onToggleSound,
@@ -31,6 +33,12 @@ export function ProfileSettingsModal({
   const [isEditing, setIsEditing] = useState(false);
 
   if (!isOpen) return null;
+
+  const totalLessonsCount = modules.length > 0
+    ? modules.flatMap((m) => m.lessons).length
+    : 12;
+  const completedLessonsCount = userState.completedLessonIds?.length || 0;
+  const totalModulesCount = modules.length > 0 ? modules.length : (userState.totalModulesCount || 12);
 
   const handleSaveName = (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +155,9 @@ export function ProfileSettingsModal({
             xp={userState.xp}
             streakDays={userState.streakDays}
             completedModulesCount={userState.completedModulesCount}
+            totalModulesCount={totalModulesCount}
+            completedLessonsCount={completedLessonsCount}
+            totalLessonsCount={totalLessonsCount}
           />
 
           {/* Preferências do Aplicativo & Zona de Reiniciar */}
