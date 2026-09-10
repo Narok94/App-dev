@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { HomeScreen } from '@/features/home';
-import { useLearningProgress } from '@/features/learning';
+import { useLearningProgress } from '@/features/learning/hooks/useLearningProgress';
 
 const LessonPlayer = lazy(() =>
   import('@/features/learning/components/InteractiveLesson/LessonPlayer').then((m) => ({

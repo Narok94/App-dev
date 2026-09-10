@@ -1,40 +1,17 @@
-// Base Service Worker Template for Progressive Web App (PWA)
-// Ready for cache strategies, background sync, and offline persistence.
-
-const CACHE_NAME = 'base-app-cache-v1';
-const PRECACHE_ASSETS = ['/', '/index.html', '/manifest.json'];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    })
-  );
+// Service Worker - Desativa caches que bloqueavam navegação no mobile e limpa versões antigas
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+      .then(() => self.registration.unregister())
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  // Navigation & asset fallback strategy (Network first with cache fallback)
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('/index.html');
-      })
-    );
-  }
-});
+// Não intercepta fetch de navegação para nunca atrasar ou travar a abertura inicial
+

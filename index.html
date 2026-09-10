@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="bg-[#12151F]">
+<html lang="pt-BR" style="background-color: #12151F; color-scheme: dark;">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -8,11 +8,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
-    </noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>Tatu</title>
     <meta name="description" content="Aplicativo premium de aprendizado prático de programação web, trilha interativa de HTML5 com foco em tecnologia, curiosidade e evolução do conhecimento." />
     <meta property="og:title" content="Tatu" />
@@ -25,25 +21,118 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="manifest" href="/manifest.json" />
+    <style>
+      :root {
+        --bg: #12151F;
+        color-scheme: dark;
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        background-color: #12151F !important;
+        color: #F2F1EA;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      #root {
+        background-color: #12151F !important;
+        width: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Experiência de inicialização instantânea e fluida do App-dev */
+      .boot-splash {
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: max(24px, calc(env(safe-area-inset-top, 0px) + 20px)) 20px max(32px, calc(env(safe-area-inset-bottom, 0px) + 24px));
+        user-select: none;
+      }
+      .boot-mascot-box {
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        background: #1B1F2E;
+        border: 1px solid #2C3247;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 28px rgba(200, 240, 61, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        animation: bootPulse 2s ease-in-out infinite;
+      }
+      .boot-mascot-icon {
+        font-size: 30px;
+        line-height: 1;
+        filter: drop-shadow(0 0 8px rgba(200, 240, 61, 0.45));
+      }
+      .boot-brand-name {
+        margin-top: 14px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #F2F1EA;
+        letter-spacing: -0.02em;
+      }
+      .boot-bar-track {
+        width: 110px;
+        height: 3px;
+        border-radius: 9999px;
+        background: #1E2436;
+        margin-top: 14px;
+        overflow: hidden;
+        position: relative;
+      }
+      .boot-bar-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 45%;
+        border-radius: 9999px;
+        background: linear-gradient(90deg, #8B7CF6, #C8F03D);
+        animation: bootSweep 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      @keyframes bootPulse {
+        0%, 100% {
+          transform: scale(1);
+          border-color: #2C3247;
+          box-shadow: 0 0 24px rgba(200, 240, 61, 0.12);
+        }
+        50% {
+          transform: scale(1.04);
+          border-color: rgba(200, 240, 61, 0.4);
+          box-shadow: 0 0 32px rgba(200, 240, 61, 0.25);
+        }
+      }
+      @keyframes bootSweep {
+        0% { left: -45%; }
+        100% { left: 100%; }
+      }
+    </style>
   </head>
-  <body class="bg-[#12151F] text-[#F2F1EA] min-h-screen min-h-[100dvh]">
-    <div id="root" class="bg-[#12151F] min-h-screen min-h-[100dvh] flex flex-col">
-      <div style="width:100%;max-width:420px;margin:0 auto;padding:max(22px, calc(env(safe-area-inset-top, 0px) + 16px)) 16px 32px;display:flex;flex-direction:column;gap:18px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;border-radius:12px;background:#1B1F2E;border:1px solid #2C3247;display:flex;align-items:center;justify-content:center;color:#C8F03D;font-weight:bold;font-size:16px;">⚡</div>
-            <span style="font-family:sans-serif;font-weight:bold;font-size:18px;color:#F2F1EA;">App-dev</span>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <div style="height:28px;width:76px;border-radius:9999px;background:#232840;border:1px solid #2C3247;"></div>
-            <div style="height:28px;width:84px;border-radius:9999px;background:#232840;border:1px solid #2C3247;"></div>
-          </div>
+  <body class="bg-[#12151F] text-[#F2F1EA] min-h-screen min-h-[100dvh]" style="background-color: #12151F;">
+    <div id="root" class="bg-[#12151F] min-h-screen min-h-[100dvh] flex flex-col" style="background-color: #12151F;">
+      <div class="boot-splash">
+        <div class="boot-mascot-box">
+          <span class="boot-mascot-icon">⚡</span>
         </div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin-top:6px;">
-          <div style="height:24px;width:160px;border-radius:8px;background:#1B1F2E;"></div>
-          <div style="height:14px;width:240px;border-radius:6px;background:#1E2436;"></div>
+        <span class="boot-brand-name">App-dev</span>
+        <div class="boot-bar-track" aria-hidden="true">
+          <div class="boot-bar-indicator"></div>
         </div>
-        <div style="height:164px;width:100%;border-radius:24px;background:#1B1F2E;border:1px solid #2C3247;"></div>
       </div>
     </div>
     <script type="module" src="/src/main.tsx"></script>
