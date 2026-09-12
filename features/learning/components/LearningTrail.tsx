@@ -15,13 +15,13 @@ export function LearningTrail({ modules, onSelectModule }: LearningTrailProps) {
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAF3EC] border border-[#D1E4D6] text-xs font-semibold text-[#2E5A44] mb-2">
           <Compass className="h-3.5 w-3.5" />
-          <span>Trilha Essencial de HTML</span>
+          <span>Trilha de HTML</span>
         </div>
         <h2 className="text-2xl font-bold tracking-tight text-[#2B231D]">
           Do Zero à Primeira Página Web
         </h2>
         <p className="mt-1 text-xs sm:text-sm text-[#706457]">
-          Avance passo a passo cavando seu caminho no código com o Tatu.
+          Aprenda os fundamentos da web passo a passo.
         </p>
       </div>
 
@@ -125,7 +125,7 @@ export function LearningTrail({ modules, onSelectModule }: LearningTrailProps) {
                   </p>
 
                   <div className="mt-3 flex items-center justify-between pt-2 border-t border-[#EDE8DF] text-[11px] text-[#8A7D70]">
-                    <span>{mod.lessons.length} aulas curtas</span>
+                    <span>{mod.lessons.length} lições</span>
                     <span className="flex items-center gap-1 font-medium text-[#2E5A44]">
                       <Star className="h-3 w-3 fill-current text-[#C25E30]" />
                       +{mod.xpReward} XP

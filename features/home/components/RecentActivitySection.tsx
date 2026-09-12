@@ -21,7 +21,7 @@ export function RecentActivitySection({ userState }: RecentActivitySectionProps)
       ? [
           {
             id: 'act-3',
-            title: 'Concluiu a aula "Seu primeiro Olá, Mundo!"',
+            title: 'Concluiu a lição "Seu primeiro Olá, Mundo!"',
             detail: 'Criou sua primeira tag <h1> no navegador',
             xp: '+35 XP',
             time: 'Hoje',
@@ -34,8 +34,8 @@ export function RecentActivitySection({ userState }: RecentActivitySectionProps)
       ? [
           {
             id: 'act-2',
-            title: 'Dominou a "Anatomia de uma Tag"',
-            detail: 'Compreendeu abertura, fechamento e conteúdo',
+            title: 'Concluiu "Anatomia de uma Tag"',
+            detail: 'Praticou abertura, fechamento e conteúdo',
             xp: '+30 XP',
             time: 'Hoje',
             icon: <CheckCircle2 className="h-4 w-4 text-[#2DD4BF]" />,
@@ -47,8 +47,8 @@ export function RecentActivitySection({ userState }: RecentActivitySectionProps)
       ? [
           {
             id: 'act-1',
-            title: 'Concluiu o conceito "O que é HTML?"',
-            detail: 'Aprendeu sobre a fundação estrutural da Web',
+            title: 'Concluiu "O que é HTML?"',
+            detail: 'Descobriu a base da estrutura da web',
             xp: '+35 XP',
             time: 'Hoje',
             icon: <CheckCircle2 className="h-4 w-4 text-[#2DD4BF]" />,
@@ -58,17 +58,17 @@ export function RecentActivitySection({ userState }: RecentActivitySectionProps)
       : []),
     {
       id: 'act-streak',
-      title: `${userState.streakDays} dias de sequência ativa`,
-      detail: 'Construindo o hábito de programar diariamente',
-      xp: 'Hábito',
+      title: `${userState.streakDays} ${userState.streakDays === 1 ? 'dia' : 'dias'} de sequência`,
+      detail: 'Constância diária na prática de código',
+      xp: 'Sequência',
       time: 'Ativo',
       icon: <Flame className="h-4 w-4 text-[#FB923C] fill-current" />,
       bg: 'bg-[#7C2D12]/20 border border-[#EA580C]/30',
     },
     {
       id: 'act-init',
-      title: 'Iniciou a jornada de aprendizado',
-      detail: 'Trilha de Fundamentos HTML5 desbloqueada',
+      title: 'Começou a jornada no Tatu',
+      detail: 'Trilha de Fundamentos de HTML liberada',
       xp: '+10 XP',
       time: 'Início',
       icon: <Terminal className="h-4 w-4 text-[#38BDF8]" />,
@@ -83,8 +83,8 @@ export function RecentActivitySection({ userState }: RecentActivitySectionProps)
           <Activity className="h-4 w-4" />
         </div>
         <div>
-          <h3 className="text-sm font-bold text-[#F8FAFC]">Linha do Tempo de Atividades</h3>
-          <p className="text-xs text-[#94A3B8]">Histórico cronológico recente de execução</p>
+          <h3 className="text-sm font-bold text-[#F8FAFC]">Atividades Recentes</h3>
+          <p className="text-xs text-[#94A3B8]">O que você andou praticando por aqui</p>
         </div>
       </div>
 

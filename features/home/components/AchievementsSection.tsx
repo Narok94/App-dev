@@ -36,18 +36,18 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
   const achievements: AchievementItem[] = [
     {
       id: 'ach-1',
-      title: 'Primeiro Compilado',
-      description: 'Você executou seu primeiro bloco de código na web!',
-      criteria: 'Conclua a sua primeira lição interativa.',
+      title: 'Primeiro Código',
+      description: 'Você concluiu sua primeira lição prática no Tatu!',
+      criteria: 'Conclua a sua primeira lição.',
       icon: 'first',
       xpBonus: 25,
       isUnlocked: completedCount >= 1,
     },
     {
       id: 'ach-2',
-      title: 'Circuito Ativo',
-      description: 'A consistência diária é o motor de evolução do desenvolvedor.',
-      criteria: 'Mantenha pelo menos 1 dia de sequência ativa.',
+      title: 'Primeira Faísca',
+      description: 'Começou sua rotina diária de prática de código.',
+      criteria: 'Mantenha pelo menos 1 dia ativo no app.',
       icon: 'streak',
       xpBonus: 30,
       isUnlocked: userState.streakDays >= 1,
@@ -55,35 +55,35 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
     {
       id: 'ach-3',
       title: 'Mestre da Sintaxe',
-      description: 'Tags e aninhamentos estruturais dominados com precisão.',
-      criteria: 'Acerte os desafios de abertura e fechamento de tags.',
+      description: 'Acertou os desafios de abertura e fechamento de tags.',
+      criteria: 'Conclua 2 lições com acertos em tags.',
       icon: 'accuracy',
       xpBonus: 50,
       isUnlocked: completedCount >= 2,
     },
     {
       id: 'ach-4',
-      title: 'Arquiteto Core',
-      description: 'Concluiu com sucesso o Módulo 1 de Fundamentos HTML!',
-      criteria: 'Complete todas as lições do primeiro módulo.',
+      title: 'Primeiro Módulo',
+      description: 'Concluiu todas as lições do módulo inicial de HTML.',
+      criteria: 'Finalize todas as lições do primeiro módulo.',
       icon: 'module',
       xpBonus: 100,
       isUnlocked: userState.completedModulesCount >= 1,
     },
     {
       id: 'ach-5',
-      title: 'Dev Imparável',
-      description: 'Velocidade e foco construindo fundações sólidas de código.',
-      criteria: 'Conclua 3 ou mais lições no aplicativo.',
+      title: 'No Ritmo',
+      description: 'Completou 3 lições com prática e foco.',
+      criteria: 'Conclua 3 ou mais lições no app.',
       icon: 'speed',
       xpBonus: 75,
       isUnlocked: completedCount >= 3,
     },
     {
       id: 'ach-6',
-      title: 'Kernel de Experiência',
-      description: 'Acumulou mais de 70 XP em aprendizado prático.',
-      criteria: 'Atinja 70 pontos de experiência no seu perfil.',
+      title: 'Centena de XP',
+      description: 'Alcançou 70 pontos de experiência praticando.',
+      criteria: 'Atinja 70 pontos de XP no seu perfil.',
       icon: 'xp',
       xpBonus: 80,
       isUnlocked: userState.xp >= 70,
@@ -120,14 +120,14 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
           </div>
           <div>
             <h2 className="text-sm sm:text-base font-black text-[#F8FAFC] tracking-tight">
-              Conquistas & Distintivos Tech
+              Conquistas
             </h2>
-            <p className="text-xs text-[#94A3B8]">Marcos de evolução na sua jornada dev</p>
+            <p className="text-xs text-[#94A3B8]">Marcos do seu progresso no código</p>
           </div>
         </div>
 
         <Badge variant={unlockedCount > 0 ? 'electric' : 'neutral'}>
-          {unlockedCount} de {achievements.length} Desbloqueados
+          {unlockedCount} de {achievements.length} conquistadas
         </Badge>
       </div>
 
@@ -184,7 +184,7 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
                     item.isUnlocked ? 'text-[#34D399]' : 'text-[#64748B]'
                   }`}
                 >
-                  {item.isUnlocked ? 'Desbloqueado' : 'A Conquistar'}
+                  {item.isUnlocked ? 'Conquistado' : 'Bloqueado'}
                 </span>
               </div>
             </div>
@@ -216,7 +216,7 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
               variant={selectedAchievement.isUnlocked ? 'electric' : 'neutral'}
               className="mb-2"
             >
-              {selectedAchievement.isUnlocked ? 'Conquistado!' : 'Ainda Bloqueado'}
+              {selectedAchievement.isUnlocked ? 'Conquistado' : 'Bloqueado'}
             </Badge>
 
             <h3 className="text-lg font-black text-[#F8FAFC]">
@@ -229,7 +229,7 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
 
             <div className="mt-4 p-3 rounded-2xl bg-[#0B0F19] border border-[#1E293B] text-left">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
-                Requisito de Desbloqueio:
+                Como desbloquear:
               </span>
               <p className="text-xs font-semibold text-[#F8FAFC] mt-0.5">
                 {selectedAchievement.criteria}
@@ -237,10 +237,10 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
             </div>
 
             <div className="mt-4 flex items-center justify-between text-xs font-bold px-1">
-              <span className="text-[#94A3B8]">Recompensa:</span>
+              <span className="text-[#94A3B8]">Bônus:</span>
               <span className="text-[#FBBF24] flex items-center gap-1">
                 <Sparkles className="h-3.5 w-3.5 fill-current" />
-                +{selectedAchievement.xpBonus} XP de bônus
+                +{selectedAchievement.xpBonus} XP
               </span>
             </div>
 
@@ -248,7 +248,7 @@ export function AchievementsSection({ userState }: AchievementsSectionProps) {
               onClick={() => setSelectedAchievement(null)}
               className="mt-5 w-full py-2.5 rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#3B82F6] hover:to-[#2563EB] text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] cursor-pointer"
             >
-              Confirmar
+              Fechar
             </button>
           </div>
         </div>

@@ -55,7 +55,7 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
 
   const stats = [
     {
-      label: 'Lições Dominadas',
+      label: 'Lições Concluídas',
       value: `${completedLessonsCount}/${totalLessonsCount}`,
       sub: `${overallPercentage}% da trilha`,
       icon: <BookCheck className="h-4 w-4 text-[#60A5FA]" />,
@@ -64,21 +64,21 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
     {
       label: 'Módulos Concluídos',
       value: `${completedModulesCount}/${totalModulesCount}`,
-      sub: 'Módulos da Era',
+      sub: 'Na trilha atual',
       icon: <Award className="h-4 w-4 text-[#C8F03D]" />,
       bg: 'bg-[#C8F03D]/10 border border-[#C8F03D]/30',
     },
     {
       label: 'Tempo Dedicado',
       value: `${practiceMinutes} min`,
-      sub: 'Prática de código',
+      sub: 'Tempo praticando',
       icon: <Clock className="h-4 w-4 text-[#38BDF8]" />,
       bg: 'bg-[#0369A1]/20 border border-[#0284C7]/30',
     },
     {
       label: 'Sequência Ativa',
       value: `${userState.streakDays} ${userState.streakDays === 1 ? 'dia' : 'dias'}`,
-      sub: 'Hábito diário',
+      sub: 'Dias seguidos',
       icon: <Flame className="h-4 w-4 text-[#FB923C] fill-current" />,
       bg: 'bg-[#7C2D12]/20 border border-[#EA580C]/30',
     },
@@ -94,9 +94,9 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
           </div>
           <div>
             <h2 className="text-sm sm:text-base font-black text-[#F8FAFC] tracking-tight">
-              Estatísticas & Desempenho
+              Progresso e Desempenho
             </h2>
-            <p className="text-xs text-[#94A3B8]">Métricas analíticas reais de evolução no código</p>
+            <p className="text-xs text-[#94A3B8]">Acompanhe suas lições, sequência e experiência</p>
           </div>
         </div>
 
@@ -147,7 +147,7 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
           </div>
           <div className="text-right">
             <div className="text-xs font-black text-[#F8FAFC]">{userState.xp} XP</div>
-            <div className="text-[10px] font-semibold text-[#64748B]">Total Acumulado</div>
+            <div className="text-[10px] font-semibold text-[#64748B]">XP Total</div>
           </div>
         </div>
 
@@ -156,8 +156,8 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
           <div className="flex justify-between text-[11px]">
             <span className="text-[#94A3B8]">
               {resolvedLevelProgress.isMaxLevel
-                ? 'Nível Máximo Alcançado!'
-                : `Faltam ${resolvedLevelProgress.xpRequiredForNextLevel} XP para o Nível ${nextLevel?.level}`}
+                ? 'Nível máximo alcançado'
+                : `Faltam ${resolvedLevelProgress.xpRequiredForNextLevel} XP para o nível ${nextLevel?.level}`}
             </span>
             <span className="font-bold text-[#38BDF8]">{resolvedLevelProgress.percentage}%</span>
           </div>
@@ -175,7 +175,7 @@ export function StatsSection({ userState, modules = [], levelProgress }: StatsSe
         <div className="space-y-2.5">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#94A3B8]">
-              Detalhamento por Módulo
+              Progresso por Módulo
             </h3>
             <span className="text-xs text-[#64748B]">
               {completedModulesCount} de {modules.length} concluídos

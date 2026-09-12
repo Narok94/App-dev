@@ -36,7 +36,7 @@ export function QuizActionButtons({
             selectedOptionId ? 'ready shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1' : 'disabled'
           }`}
         >
-          <span>{selectedOptionId ? 'Confirmar Resposta ⚡' : 'Selecione uma Alternativa'}</span>
+          <span>{selectedOptionId ? 'Verificar resposta' : 'Escolha uma opção'}</span>
         </motion.button>
       ) : isCorrect ? (
         <motion.button
@@ -46,7 +46,7 @@ export function QuizActionButtons({
           onClick={onNextStep}
           className="btn-primary ready py-3.5 sm:py-4 text-base rounded-2xl w-full shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2 group"
         >
-          <span>{isLastStep ? 'Concluir Missão 🏆' : 'Continuar a Jornada'}</span>
+          <span>{isLastStep ? 'Concluir lição 🏆' : 'Continuar'}</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </motion.button>
       ) : (
@@ -64,7 +64,7 @@ export function QuizActionButtons({
             }}
           >
             <RotateCcw className="w-4 h-4" />
-            <span>Tentar de Novo</span>
+            <span>Tentar de novo</span>
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }}

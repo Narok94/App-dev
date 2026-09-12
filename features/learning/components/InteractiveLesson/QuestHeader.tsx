@@ -41,8 +41,8 @@ export function QuestHeader({
           type="button"
           onClick={onExit}
           className="w-10 h-10 rounded-2xl bg-[#1B1F2E] border border-[#2C3247] hover:border-[#8B7CF6]/50 hover:bg-[#232840] text-[#9096AC] hover:text-[#F2F1EA] flex items-center justify-center transition-colors cursor-pointer shadow-sm"
-          aria-label="Sair da Quest"
-          title="Sair da quest e retornar ao hub"
+          aria-label="Sair da lição"
+          title="Sair da lição e voltar ao início"
         >
           <X className="w-4 h-4" />
         </motion.button>
@@ -52,11 +52,11 @@ export function QuestHeader({
           <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#8B7CF6]">
             {currentStep.type === 'concept' ? (
               <span className="flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-[#8B7CF6]" /> Descoberta
+                <Sparkles className="w-3 h-3 text-[#8B7CF6]" /> Conceito
               </span>
             ) : (
               <span className="flex items-center gap-1">
-                <Swords className="w-3 h-3 text-[#FF6B4A]" /> Missão
+                <Swords className="w-3 h-3 text-[#FF6B4A]" /> Desafio
               </span>
             )}
             <span className="text-[#2C3247]">·</span>
@@ -79,7 +79,7 @@ export function QuestHeader({
               ? 'border-[#FF6B4A] text-[#FF6B4A] shadow-[0_0_16px_rgba(255,107,74,0.35)] scale-105'
               : 'border-[#2C3247] text-[#C8F03D] shadow-[0_0_15px_rgba(200,240,61,0.12)]'
           }`}
-          title={`${userXp ?? totalXp} XP acumulados no seu progresso`}
+          title={`${userXp ?? totalXp} XP no seu perfil`}
         >
           <Zap
             className={`w-3.5 h-3.5 ${

@@ -28,7 +28,7 @@ function HeroMissionCardComponent({
       </div>
       <h2>{nextPendingLesson.lesson.title}</h2>
       <div className="hero-sub">
-        {nextPendingLesson.module.tagline || 'Descubra a fundação da web'}
+        {nextPendingLesson.module.tagline || 'Fundamentos da web na prática'}
       </div>
       <div className="hero-meta">
         <span>⏱ ~{nextPendingLesson.lesson.durationMinutes} min</span>
@@ -41,7 +41,7 @@ function HeroMissionCardComponent({
         onClick={onContinueLearning}
         className="btn-primary cursor-pointer select-none"
       >
-        {completedLessonsCount === 0 ? 'Iniciar Missão' : 'Continuar Missão'}
+        {completedLessonsCount === 0 ? 'Começar lição' : 'Continuar praticando'}
       </motion.button>
     </div>
   );

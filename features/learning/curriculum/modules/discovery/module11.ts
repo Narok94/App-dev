@@ -9,9 +9,9 @@ export const MODULE_11_HTML_PROFISSIONAL: LearningModule = {
   eraId: 'era-descoberta',
   order: 11,
   title: 'HTML Profissional',
-  tagline: 'SEO, redes sociais, acessibilidade técnica e validação W3C',
+  tagline: 'SEO, redes sociais, acessibilidade e boas práticas',
   description:
-    'Prepare suas páginas para o mercado profissional: metadados Open Graph para WhatsApp/LinkedIn, SEO no Google, lang="pt-BR" e as regras de ouro da acessibilidade ARIA.',
+    'Aprenda a configurar metadados para redes sociais e buscas, definir o idioma da página e aplicar boas práticas de acessibilidade.',
   status: 'locked',
   xpReward: 140,
   iconName: 'award',
@@ -19,14 +19,14 @@ export const MODULE_11_HTML_PROFISSIONAL: LearningModule = {
   lessons: [
     {
       id: 'quest-html-11-1',
-      title: 'SEO & Redes Sociais: Open Graph',
+      title: 'SEO e Redes Sociais: Open Graph',
       durationMinutes: 4,
       isCompleted: false,
       type: 'quest',
     },
     {
       id: 'quest-html-11-2',
-      title: 'Acessibilidade Técnica & Código Válido',
+      title: 'Acessibilidade e Boas Práticas',
       durationMinutes: 5,
       isCompleted: false,
       type: 'quest',
@@ -41,27 +41,27 @@ export const MODULE_11_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-11',
     moduleOrder: 11,
     moduleTitle: 'HTML Profissional',
-    title: 'SEO & Redes Sociais: Open Graph',
-    subtitle: 'Faça seus links gerarem cards elegantes e chamativos no WhatsApp e Google',
+    title: 'SEO e Redes Sociais: Open Graph',
+    subtitle: 'Faça seus links gerarem prévias completas em redes e no Google',
     estimatedMinutes: 4,
     totalXp: 65,
     steps: [
       {
         id: 'step-11-1-concept',
         type: 'concept',
-        title: 'Como a Internet Enxerga Seu Site',
+        title: 'Como seu site aparece nas buscas e redes',
         conceptText:
-          'Quando você compartilha um link no WhatsApp, Twitter ou LinkedIn, como o aplicativo sabe qual imagem de capa e qual resumo exibir?\n\nA resposta está nos metadados dentro do <head>:\n\n1. SEO do Google: <meta name="description" content="..."> fornece o resumo de 1 ou 2 frases exibido abaixo do título nos resultados de busca.\n\n2. Protocolo Open Graph (OG): padronizado para redes sociais através da propriedade property="og:nome":\n• <meta property="og:title" content="Título do Card">\n• <meta property="og:description" content="Resumo atraente...">\n• <meta property="og:image" content="https://meusite.com/capa.jpg">',
+          'Ao compartilhar um link no WhatsApp ou LinkedIn, como o aplicativo descobre qual imagem e qual texto exibir?\n\nA resposta está nos metadados dentro do <head>:\n\n1. Resumo no Google: <meta name="description" content="..."> traz a frase exibida abaixo do título nos resultados de busca.\n\n2. Open Graph (OG): padrão usado pelas redes sociais:\n• <meta property="og:title" content="Título do Card">\n• <meta property="og:description" content="Resumo claro...">\n• <meta property="og:image" content="https://meusite.com/capa.jpg">',
         codeSnippet: `<head>\n  <meta charset="UTF-8">\n  <title>App-dev | Aprenda a Programar</title>\n  <meta name="description" content="Plataforma interativa para dominar desenvolvimento web do zero.">\n  \n  <!-- Open Graph para Redes Sociais -->\n  <meta property="og:title" content="Aprenda HTML Moderno no App-dev">\n  <meta property="og:image" content="https://app.dev/banner-og.png">\n</head>`,
         tatuTip:
-          'Sempre forneça uma URL absoluta completa (com https://) na meta tag og:image. Redes sociais como o WhatsApp não conseguem carregar imagens com caminhos relativos!',
+          'Sempre coloque o link completo (começando com https://) na meta tag og:image. Redes sociais como o WhatsApp não encontram a imagem se o caminho for relativo!',
         xpReward: 15,
       },
       {
         id: 'step-11-1-completion',
         type: 'code_completion',
-        title: 'Completar Código: Resumo de Busca',
-        question: 'Complete a tag responsável pela descrição do site que aparece nos resultados do Google:',
+        title: 'Resumo de busca para o Google',
+        question: 'Complete a tag que define o resumo do site para os resultados do Google:',
         codeSnippetWithBlank: `<meta name="___" content="Cursos práticos de desenvolvimento web.">`,
         correctAnswer: 'description',
         options: [
@@ -70,61 +70,61 @@ export const MODULE_11_QUESTS: Record<string, Quest> = {
             text: 'description',
             isCorrect: true,
             explanation:
-              'Correto! name="description" é o metadado canônico lido por todos os mecanismos de busca da internet.',
+              'Correto! name="description" é a tag que fornece o resumo lido pelos mecanismos de busca.',
           },
           {
             id: 'opt-comp-summary',
             text: 'summary',
             isCorrect: false,
             explanation:
-              'Para SEO geral do Google, o nome canônico do metadado é "description".',
+              'Para a descrição geral de busca, o nome padrão é "description".',
           },
           {
             id: 'opt-comp-about',
             text: 'about',
             isCorrect: false,
             explanation:
-              '"about" não é um metadado padrão de SEO no HTML.',
+              '"about" não é um metadado padrão do HTML para SEO.',
           },
         ],
         correctOptionId: 'opt-comp-desc',
         explanationOnCorrect:
-          'SEO refinado! O Google agora tem um resumo oficial para exibir aos seus futuros visitantes.',
+          'Muito bem! A meta tag description fornece o resumo exibido nos resultados de busca.',
         explanationOnIncorrect:
-          'A palavra em inglês para descrição de busca é description.',
+          'Para a descrição do site nos buscadores, usamos description.',
         xpReward: 25,
       },
       {
         id: 'step-11-1-choice',
         type: 'multiple_choice',
-        title: 'Missão: Onde vivem os metadados do Open Graph?',
-        question: 'Em qual parte do documento HTML devem obrigatoriamente residir as tags <meta> do Open Graph e SEO?',
+        title: 'Onde colocar os metadados?',
+        question: 'Em qual parte do documento HTML devem ficar as tags <meta> de SEO e Open Graph?',
         options: [
           {
             id: 'opt-og-head',
-            text: 'Exclusivamente dentro do elemento <head>, nos bastidores do documento.',
+            text: 'Dentro do elemento <head>, na parte de configurações do documento.',
             isCorrect: true,
             explanation:
-              'Exato! Todos os metadados e configurações de protocolo vivem no <head>.',
+              'Exato! Metadados e configurações do site ficam sempre dentro da tag <head>.',
           },
           {
             id: 'opt-og-footer',
-            text: 'Dentro do <footer> ao lado dos direitos autorais.',
+            text: 'Dentro do <footer> ao lado das informações de contato.',
             isCorrect: false,
             explanation:
-              'Tags <meta> são ilegais e ignoradas no <footer>; elas pertencem ao <head>.',
+              'Tags <meta> pertencem ao <head> e não ao rodapé.',
           },
           {
             id: 'opt-og-outside',
             text: 'Fora do arquivo HTML, em um arquivo de texto separado.',
             isCorrect: false,
             explanation:
-              'Os metadados residem no próprio arquivo HTML dentro da tag <head>.',
+              'Os metadados ficam dentro do próprio arquivo HTML, no <head>.',
           },
         ],
         correctOptionId: 'opt-og-head',
         explanationOnCorrect:
-          'Arquitetura sólida! O <head> é o verdadeiro centro de inteligência dos robôs da web.',
+          'Exato! Metadados e configurações de compartilhamento ficam sempre dentro do <head>.',
         explanationOnIncorrect:
           'Lembre-se: metadados ficam sempre dentro do <head>.',
         xpReward: 25,
@@ -138,64 +138,64 @@ export const MODULE_11_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-11',
     moduleOrder: 11,
     moduleTitle: 'HTML Profissional',
-    title: 'Acessibilidade Técnica & Código Válido',
-    subtitle: 'Descubra a primeira regra do ARIA e o impacto vital do atributo lang',
+    title: 'Acessibilidade e Boas Práticas',
+    subtitle: 'Entenda o papel do atributo lang e por que usar tags nativas',
     estimatedMinutes: 5,
     totalXp: 75,
     steps: [
       {
         id: 'step-11-2-concept',
         type: 'concept',
-        title: 'As Regras de Ouro do Desenvolvedor Sênior',
+        title: 'Acessibilidade desde o início',
         conceptText:
-          'A diferença entre um código amador e um profissional reside na acessibilidade e conformidade com padrões:\n\n1. O Atributo lang="pt-BR":\nNa tag <html> raiz, declare SEMPRE o idioma. Leitores de tela usam isso para escolher o sintetizador de voz e a pronúncia correta das palavras.\n\n2. A Primeira Regra do ARIA (Accessible Rich Internet Applications):\n"Se você pode usar um elemento HTML nativo com a semântica já existente, NUNCA invente uma div com ARIA".\nUm erro amador clássico é fazer: <div class="botao" onclick="...">. Isso quebra navegação por teclado (Tab) e leitores de tela. Use SEMPRE <button>!',
+          'Escrever bom HTML é pensar em quem navega pela página, inclusive usando tecnologias assistivas:\n\n1. O Atributo lang="pt-BR":\nNa tag <html>, declare sempre o idioma do conteúdo. Leitores de tela usam essa informação para carregar o sintetizador de voz e a pronúncia certa das palavras.\n\n2. Prefira tags nativas:\nSe já existe uma tag HTML para aquilo, prefira usá-la em vez de criar uma <div> genérica. Um exemplo comum é usar <div onclick="..."> como se fosse botão. Isso quebra a navegação por teclado (Tab) e leitores de tela. Sempre que for um botão, use a tag <button>!',
         codeSnippet: `<!DOCTYPE html>\n<!-- Idioma definido para sintetizadores de voz -->\n<html lang="pt-BR">\n  <head>\n    <title>Página Acessível</title>\n  </head>\n  <body>\n    <!-- Botão nativo: navegável por teclado sem gambiarras -->\n    <button type="button">Curtir Publicação</button>\n  </body>\n</html>`,
         tatuTip:
-          'Qualquer usuário deve conseguir navegar e interagir com seu site usando apenas a tecla TAB e ENTER do teclado. Elementos nativos como <a> e <button> já nascem com essa capacidade de fábrica!',
+          'Quem navega pelo teclado usa as teclas Tab e Enter para circular e interagir pela página. Elementos nativos como <a> e <button> já funcionam assim por padrão, sem esforço extra!',
         xpReward: 15,
       },
       {
         id: 'step-11-2-fix',
         type: 'code_fix',
-        title: 'Correção de Bug: O Falso Botão',
-        question: 'O código abaixo criou um botão falso usando uma div, quebrando a navegação por teclado para pessoas com deficiência motora. Como consertar?',
+        title: 'Evitando botões falsos',
+        question: 'O código abaixo usou uma div genérica com clique, prejudicando a navegação por teclado. Como corrigir?',
         brokenCode: `<div class="btn-enviar" onclick="enviarDados()">Enviar Mensagem</div>`,
         fixedCode: `<button type="submit">Enviar Mensagem</button>`,
         options: [
           {
             id: 'opt-fix-11-2-a',
-            text: 'Substituir a div genérica pela tag semântica nativa <button>, garantindo foco de teclado e acessibilidade imediata.',
+            text: 'Substituir a div pela tag nativa <button>, garantindo foco pelo teclado e acessibilidade.',
             isCorrect: true,
             explanation:
-              'Exato! A tag nativa <button> já possui foco por teclado (tecla Tab), ativação por Enter/Espaço e anúncio correto em leitores de tela.',
+              'Exato! A tag <button> já recebe foco pelo teclado (Tab), pode ser ativada com Enter/Espaço e é anunciada corretamente por leitores de tela.',
           },
           {
             id: 'opt-fix-11-2-b',
-            text: 'Trocar a div por uma tag <span> com cor azul.',
+            text: 'Trocar a div por uma tag <span> azul.',
             isCorrect: false,
             explanation:
-              '<span> também é um elemento inline genérico sem suporte nativo a botões.',
+              'A tag <span> também é genérica e não oferece os recursos de teclado de um botão.',
           },
           {
             id: 'opt-fix-11-2-c',
-            text: 'Adicionar mais 10 classes CSS na div.',
+            text: 'Adicionar mais classes CSS na div.',
             isCorrect: false,
             explanation:
-              'CSS cuida apenas da aparência visual, não dá acessibilidade funcional a uma div.',
+              'O CSS cuida da aparência, mas não transforma uma div em um botão navegável por teclado.',
           },
         ],
         correctOptionId: 'opt-fix-11-2-a',
         explanationOnCorrect:
-          'Excelente! Você aplicou a Primeira Regra do ARIA: use elementos nativos semânticos sempre!',
+          'Boa! Usar <button> garante foco pelo teclado e suporte nativo a leitores de tela.',
         explanationOnIncorrect:
-          'Se é um botão, a tag certa é <button>.',
+          'Se a intenção é criar um botão, a tag recomendada é <button>.',
         xpReward: 30,
       },
       {
         id: 'step-11-2-tf',
         type: 'true_false',
-        title: 'Verdadeiro ou Falso: Atributo lang',
-        question: 'O atributo lang="pt-BR" na tag <html> informa aos sintetizadores de voz para pessoas cegas que eles devem ler o texto com a pronúncia do português brasileiro.',
+        title: 'Verdadeiro ou Falso: o atributo lang',
+        question: 'O atributo lang="pt-BR" na tag <html> ajuda leitores de tela a pronunciarem o texto com a entonação correta do português.',
         isTrue: true,
         options: [
           {
@@ -203,21 +203,21 @@ export const MODULE_11_QUESTS: Record<string, Quest> = {
             text: 'Verdadeiro',
             isCorrect: true,
             explanation:
-              'Correto! Sem esse atributo, um leitor de tela configurado em inglês tentaria ler as palavras em português com sotaque americano incompreensível.',
+              'Correto! Sem esse atributo, um sintetizador pode tentar ler em português usando a pronúncia de outro idioma, ficando difícil de entender.',
           },
           {
             id: 'opt-tf-lang-f',
             text: 'Falso',
             isCorrect: false,
             explanation:
-              'Incorreto. O atributo lang é de importância máxima para a inteligibilidade das tecnologias assistivas.',
+              'Na verdade é verdadeiro: o atributo lang é muito importante para sintetizadores de voz e acessibilidade.',
           },
         ],
         correctOptionId: 'opt-tf-lang-v',
         explanationOnCorrect:
-          'Conhecimento de nível profissional! Seu código agora respeita padrões internacionais de acessibilidade.',
+          'Isso mesmo! O atributo lang orienta a pronúncia dos sintetizadores de voz para o português.',
         explanationOnIncorrect:
-          'O atributo lang define o idioma e a pronúncia oficial do documento.',
+          'O atributo lang define o idioma e a pronúncia do documento.',
         xpReward: 30,
       },
     ],

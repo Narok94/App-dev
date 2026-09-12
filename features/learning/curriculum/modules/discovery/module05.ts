@@ -9,9 +9,9 @@ export const MODULE_05_MUNDO_FORMA: LearningModule = {
   eraId: 'era-descoberta',
   order: 5,
   title: 'O Mundo Ganha Forma',
-  tagline: 'Imagens, áudio e vídeo na era moderna',
+  tagline: 'Imagens, áudio e vídeo na prática',
   description:
-    'Insira elementos visuais com a tag <img>, compreenda a importância crucial do texto alternativo alt, explore imagens responsivas com <picture> e áudio/vídeo nativos.',
+    'Aprenda a colocar imagens com a tag <img>, usar o texto alternativo alt para acessibilidade e adicionar áudio e vídeo à sua página.',
   status: 'locked',
   xpReward: 120,
   iconName: 'image',
@@ -19,14 +19,14 @@ export const MODULE_05_MUNDO_FORMA: LearningModule = {
   lessons: [
     {
       id: 'quest-html-5-1',
-      title: 'Imagens & O Superpoder do alt',
+      title: 'Imagens e o Atributo alt',
       durationMinutes: 4,
       isCompleted: false,
       type: 'quest',
     },
     {
       id: 'quest-html-5-2',
-      title: 'Mídia Moderna: Áudio, Vídeo & Picture',
+      title: 'Áudio e Vídeo no HTML',
       durationMinutes: 4,
       isCompleted: false,
       type: 'quest',
@@ -41,64 +41,64 @@ export const MODULE_05_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-5',
     moduleOrder: 5,
     moduleTitle: 'O Mundo Ganha Forma',
-    title: 'Imagens & O Superpoder do alt',
-    subtitle: 'Aprenda a inserir imagens acessíveis e estáveis com src, alt, width e height',
+    title: 'Imagens e o Atributo alt',
+    subtitle: 'Aprenda a colocar imagens com src, alt, width e height',
     estimatedMinutes: 4,
     totalXp: 55,
     steps: [
       {
         id: 'step-5-1-concept',
         type: 'concept',
-        title: 'Como Imagens Funcionam na Web',
+        title: 'Como funcionam as imagens na web',
         conceptText:
-          'Diferente de um arquivo do Word, uma imagem não fica "embutida" no arquivo HTML. A tag <img> cria uma janela que aponta para um arquivo externo através do atributo src (source).\n\nEla é uma tag auto-fechável (void element) e possui duas regras de ouro fundamentais:\n\n1. Atributo alt (Alternative Text): descreve a imagem em palavras. Se a imagem falhar ao carregar ou se uma pessoa com deficiência visual usar um leitor de tela, esse texto é lido com clareza. Além disso, o Google usa o alt para entender a foto!\n2. Atributos width e height: definir as dimensões originais permite ao navegador reservar o espaço exato antes mesmo da foto baixar, evitando que o texto "pule" na tela (prevenção de CLS - Cumulative Layout Shift).',
-        codeSnippet: `<img\n  src="paisagem-montanhas.jpg"\n  alt="Cordilheira nevada ao entardecer sob céu azul e laranja"\n  width="800"\n  height="600"\n>`,
+          'Diferente de um documento de texto, uma imagem não fica dentro do arquivo HTML. A tag <img> aponta para um arquivo externo através do atributo src (source).\n\nEla é uma tag que fecha nela mesma e tem duas boas práticas fundamentais:\n\n1. Atributo alt (Alternative Text): descreve a imagem em palavras. Se a imagem não carregar ou se alguém usar leitor de tela, esse texto é lido. Além disso, o Google usa o alt para entender a imagem!\n2. Atributos width e height: informar a largura e a altura originais ajuda o navegador a reservar o espaço antes do carregamento, evitando que a página dê saltos visuais.',
+        codeSnippet: `<img\n  src="paisagem-montanhas.jpg"\n  alt="Cordilheira com neve ao pôr do sol sob céu alaranjado"\n  width="800"\n  height="600"\n>`,
         tatuTip:
-          'Se uma imagem for puramente decorativa (como uma linha ou enfeite que não agrega informação), deixe o alt vazio (alt="") em vez de apagá-lo, para que os leitores de tela a ignorem em silêncio.',
+          'Se a imagem for apenas um enfeite sem significado importante, deixe o alt vazio (alt="") em vez de remover o atributo. Assim os leitores de tela não perdem tempo lendo nada ali.',
         xpReward: 15,
       },
       {
         id: 'step-5-1-fix',
         type: 'code_fix',
-        title: 'Correção de Bug: A Imagem Invisível aos Cegos',
-        question: 'Analise o código abaixo e identifique o erro gravíssimo de boas práticas e acessibilidade:',
+        title: 'Ajuste na tag de imagem',
+        question: 'O código abaixo tem problemas de sintaxe e acessibilidade. Qual é a forma correta?',
         brokenCode: `<img src="foto-perfil.png"></img>`,
         fixedCode: `<img src="foto-perfil.png" alt="Foto de perfil de Maria sorrindo com óculos escuros">`,
         options: [
           {
             id: 'opt-fix-5-1-a',
-            text: 'A tag <img> não usa fechamento </img> e precisa obrigatoriamente do atributo alt descritivo.',
+            text: 'A tag <img> fecha nela mesma (sem </img>) e precisa do atributo alt com uma descrição.',
             isCorrect: true,
             explanation:
-              'Perfeito! <img> é uma tag auto-fechável (sem </img>) e a presença do atributo alt é obrigatória para acessibilidade e padrões W3C.',
+              'Perfeito! <img> não precisa de tag de fechamento e o alt é essencial para a acessibilidade.',
           },
           {
             id: 'opt-fix-5-1-b',
             text: 'Deveríamos trocar <img> por uma tag <photo>.',
             isCorrect: false,
             explanation:
-              'A tag padrão para imagens na web é <img>.',
+              'A tag padrão para imagens no HTML é <img>.',
           },
           {
             id: 'opt-fix-5-1-c',
             text: 'O atributo src deveria ser href.',
             isCorrect: false,
             explanation:
-              'Imagens incorporam recursos usando src (source), não href.',
+              'Imagens carregam arquivos usando src (source), não href.',
           },
         ],
         correctOptionId: 'opt-fix-5-1-a',
         explanationOnCorrect:
-          'Excelente olho clínico! Você eliminou a tag de fechamento inválida e garantiu acessibilidade com alt.',
+          'Boa! A tag <img> fecha nela mesma e o texto alternativo alt garante a acessibilidade.',
         explanationOnIncorrect:
-          'Lembre-se: <img> nunca tem </img> e SEMPRE deve ter o atributo alt descritivo.',
+          'Lembre-se: <img> não usa </img> e deve ter o atributo alt descritivo.',
         xpReward: 20,
       },
       {
         id: 'step-5-1-tf',
         type: 'true_false',
         title: 'Verdadeiro ou Falso: Atributo alt',
-        question: 'O atributo alt em imagens pode ser totalmente removido sempre que a imagem for muito bonita e óbvia para quem enxerga.',
+        question: 'O atributo alt em imagens pode ser removido se a imagem for bem compreensível visualmente.',
         isTrue: false,
         options: [
           {
@@ -106,21 +106,21 @@ export const MODULE_05_QUESTS: Record<string, Quest> = {
             text: 'Verdadeiro',
             isCorrect: false,
             explanation:
-              'Incorreto! Milhões de pessoas navegam com leitores de tela e a internet precisa ser universal para todos.',
+              'Na verdade não! Muitas pessoas usam leitores de tela e precisam do texto alternativo para entender o conteúdo.',
           },
           {
             id: 'opt-tf-alt-f',
             text: 'Falso',
             isCorrect: true,
             explanation:
-              'Correto! O alt é indispensável para acessibilidade, conexões lentas e indexação em mecanismos de busca.',
+              'Correto! O alt é indispensável para acessibilidade, para conexões lentas e para mecanismos de busca.',
           },
         ],
         correctOptionId: 'opt-tf-alt-f',
         explanationOnCorrect:
-          'Consciência e profissionalismo! Acessibilidade é um direito fundamental na web.',
+          'Muito bem! O alt é essencial para quem usa leitores de tela e para quando a imagem não carrega.',
         explanationOnIncorrect:
-          'Nunca remova o atributo alt; ele é a voz da imagem para quem não a enxerga.',
+          'O atributo alt descreve a imagem em palavras para quem não consegue vê-la.',
         xpReward: 20,
       },
     ],
@@ -132,27 +132,27 @@ export const MODULE_05_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-5',
     moduleOrder: 5,
     moduleTitle: 'O Mundo Ganha Forma',
-    title: 'Mídia Moderna: Áudio, Vídeo & Picture',
-    subtitle: 'Dê voz e movimento ao navegador com tags nativas multimídia',
+    title: 'Áudio e Vídeo no HTML',
+    subtitle: 'Adicione som e vídeo com tags nativas do navegador',
     estimatedMinutes: 4,
     totalXp: 55,
     steps: [
       {
         id: 'step-5-2-concept',
         type: 'concept',
-        title: 'Mídia Viva sem Plugins',
+        title: 'Áudio e vídeo sem complicações',
         conceptText:
-          'No passado, a web dependia de plugins pesados (como o finado Flash) para tocar áudio ou vídeo. O HTML5 mudou tudo com elementos nativos:\n\n• <video>: reproduz vídeos direto no navegador. O atributo controls adiciona os botões de play, pause e volume.\n• <audio>: funciona de forma idêntica para músicas, podcasts e efeitos sonoros.\n• <picture>: permite entregar imagens diferentes dependendo do tamanho da tela ou formato moderno suportado (como WebP ou AVIF).',
+          'O HTML5 trouxe elementos nativos para reproduzir mídias sem precisar de nenhum complemento externo:\n\n• <video>: toca vídeos direto no navegador. O atributo controls exibe botões de play, pause e volume.\n• <audio>: funciona de forma semelhante para músicas, podcasts e efeitos sonoros.\n• <picture>: ajuda a carregar imagens em formatos ou tamanhos diferentes de acordo com a tela do usuário.',
         codeSnippet: `<video controls width="640" poster="capa.jpg">\n  <source src="aula.mp4" type="video/mp4">\n  <source src="aula.webm" type="video/webm">\n  Seu navegador não suporta este vídeo.\n</video>`,
         tatuTip:
-          'Sempre forneça texto de fallback dentro de <video> e <audio>. Se o navegador do usuário for antigo ou não suportar o formato, ele exibirá a mensagem amigável!',
+          'Sempre coloque um texto simples dentro de <video> e <audio>. Se o navegador do usuário for muito antigo, ele exibe essa mensagem no lugar!',
         xpReward: 15,
       },
       {
         id: 'step-5-2-completion',
         type: 'code_completion',
-        title: 'Completar Código: Controles de Áudio',
-        question: 'Qual atributo booleano deve ser adicionado para que o reprodutor de áudio mostre os botões de play, pause e barra de progresso ao usuário?',
+        title: 'Controles do áudio',
+        question: 'Qual atributo adicionamos para exibir os botões de play, pause e volume no player de áudio?',
         codeSnippetWithBlank: `<audio ___ src="podcast-episodio-01.mp3">\n  Podcast indisponível no momento.\n</audio>`,
         correctAnswer: 'controls',
         options: [
@@ -161,14 +161,14 @@ export const MODULE_05_QUESTS: Record<string, Quest> = {
             text: 'controls',
             isCorrect: true,
             explanation:
-              'Exato! O atributo "controls" ativa a interface gráfica nativa de reprodução com play/pause e volume.',
+              'Exato! O atributo "controls" ativa a barra nativa com play, pause e volume.',
           },
           {
             id: 'opt-comp-play',
             text: 'play',
             isCorrect: false,
             explanation:
-              'O atributo correto da especificação HTML5 para exibir a barra é "controls".',
+              'O atributo correto no HTML5 para exibir a barra é "controls".',
           },
           {
             id: 'opt-comp-buttons',
@@ -187,44 +187,44 @@ export const MODULE_05_QUESTS: Record<string, Quest> = {
         ],
         correctOptionId: 'opt-comp-controls',
         explanationOnCorrect:
-          'Áudio ativado com perfeição! O usuário agora pode ouvir e pausar o podcast com liberdade.',
+          'Muito bem! O atributo controls mostra os botões para dar play, pausar e ajustar o volume.',
         explanationOnIncorrect:
-          'A palavra em inglês para painel de controle do player é controls.',
+          'O nome do atributo que ativa os botões do player é controls.',
         xpReward: 20,
       },
       {
         id: 'step-5-2-choice',
         type: 'multiple_choice',
-        title: 'Missão: O que acontece sem o atributo controls?',
-        question: 'O que acontece na tela se você inserir a tag <video src="filme.mp4"></video> sem incluir o atributo controls?',
+        title: 'O que acontece sem controls?',
+        question: 'O que acontece na tela ao colocar a tag <video src="filme.mp4"></video> sem o atributo controls?',
         options: [
           {
             id: 'opt-video-invisible',
-            text: 'O vídeo é carregado, mas fica totalmente invisível ou sem botões de play para o usuário iniciar a reprodução.',
+            text: 'O vídeo carrega, mas fica sem botões de controle para o usuário iniciar a reprodução.',
             isCorrect: true,
             explanation:
-              'Correto! Sem "controls", o navegador renderiza o quadro do vídeo mas oculta qualquer botão de interação.',
+              'Correto! Sem "controls", o navegador renderiza o vídeo sem nenhum botão visível de reprodução.',
           },
           {
             id: 'opt-video-explode',
             text: 'O computador do usuário reinicia automaticamente.',
             isCorrect: false,
             explanation:
-              'HTML é uma linguagem declarativa segura, isso não afeta o sistema operacional.',
+              'HTML é apenas uma linguagem de marcação segura, sem impacto no sistema.',
           },
           {
             id: 'opt-video-css',
             text: 'O navegador cria botões personalizados em 3D sozinho.',
             isCorrect: false,
             explanation:
-              'Sem controls, nenhum botão nativo é desenhado na tela.',
+              'Sem controls, nenhum botão nativo é exibido na tela.',
           },
         ],
         correctOptionId: 'opt-video-invisible',
         explanationOnCorrect:
-          'Entendimento cirúrgico! "controls" é o interruptor que dá usabilidade aos seus players de mídia.',
+          'Exato! Sem o controls, o vídeo ou áudio fica sem os botões para o usuário interagir.',
         explanationOnIncorrect:
-          'Sem controls, o reprodutor não exibe botões de play e volume para o usuário.',
+          'Sem controls, o player não mostra os botões de play e volume.',
         xpReward: 20,
       },
     ],

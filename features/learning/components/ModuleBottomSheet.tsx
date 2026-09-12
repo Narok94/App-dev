@@ -70,12 +70,12 @@ export function ModuleBottomSheet({
           <div className="mt-4 flex items-center gap-3 pt-3 border-t border-[#1E293B]">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[#FBBF24]">
               <Sparkles className="h-4 w-4 fill-current" />
-              <span>+{module.xpReward} XP Recompensa</span>
+              <span>+{module.xpReward} XP</span>
             </div>
             <span className="text-[#334155]">&bull;</span>
             <div className="flex items-center gap-1.5 text-xs font-medium text-[#94A3B8]">
               <Clock className="h-4 w-4 text-[#38BDF8]" />
-              <span>~{module.estimatedMinutes} minutos totais</span>
+              <span>~{module.estimatedMinutes} min no total</span>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export function ModuleBottomSheet({
         {/* Lesson List */}
         <div className="overflow-y-auto p-5 sm:p-6 space-y-3 flex-1">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
-            Aulas Práticas ({module.lessons.length})
+            Lições ({module.lessons.length})
           </h3>
 
           {isLocked ? (
@@ -93,7 +93,7 @@ export function ModuleBottomSheet({
               </div>
               <h4 className="text-sm font-bold text-[#F8FAFC]">Módulo Bloqueado</h4>
               <p className="text-xs text-[#94A3B8] max-w-xs mx-auto">
-                Complete as lições do módulo anterior para desbloquear esta nova etapa de desenvolvimento!
+                Complete as lições do módulo anterior para liberar este módulo.
               </p>
             </div>
           ) : (
@@ -173,8 +173,8 @@ export function ModuleBottomSheet({
               <BookOpen className="h-4 w-4" />
               <span>
                 {module.status === 'completed'
-                  ? 'Revisar Módulo Completo'
-                  : 'Começar Próxima Aula do Módulo'}
+                  ? 'Revisar módulo'
+                  : 'Continuar módulo'}
               </span>
             </button>
           </div>

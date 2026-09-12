@@ -44,8 +44,8 @@ export function AppPreferencesSection({
                 )}
               </div>
               <div>
-                <div className="text-xs font-bold text-[#F8FAFC]">Feedback Sonoro de Conclusão</div>
-                <div className="text-[11px] text-[#64748B]">Áudio ao acertar desafios práticos</div>
+                <div className="text-xs font-bold text-[#F8FAFC]">Efeitos sonoros</div>
+                <div className="text-[11px] text-[#64748B]">Tocar som ao acertar e avançar nas lições</div>
               </div>
             </div>
             <button
@@ -71,8 +71,8 @@ export function AppPreferencesSection({
                 <Wifi className="h-4 w-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-[#F8FAFC]">Modo Offline Ativo</div>
-                <div className="text-[11px] text-[#64748B]">Armazenamento local em tempo real</div>
+                <div className="text-xs font-bold text-[#F8FAFC]">Funciona sem internet</div>
+                <div className="text-[11px] text-[#64748B]">Seu progresso fica salvo no seu aparelho</div>
               </div>
             </div>
             <Badge variant="cyan" className="text-[10px]">

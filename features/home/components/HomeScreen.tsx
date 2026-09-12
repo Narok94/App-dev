@@ -63,8 +63,8 @@ function HomeScreenComponent({
         <h1 className="font-baloo text-2xl font-bold text-[#F2F1EA]">Olá, {greetingName} 👋</h1>
         <p className="text-xs text-[#9096AC]">
           {completedToday
-            ? 'Mandou bem hoje! Que tal avançar mais uma missão no código?'
-            : 'Sua jornada de código te espera. Pronto para a próxima missão?'}
+            ? 'Mandou bem hoje! Que tal fazer mais uma lição?'
+            : 'Pronto para praticar código hoje?'}
         </p>
       </div>
 
@@ -120,7 +120,7 @@ function HomeScreenComponent({
       <AppDialogModal
         isOpen={activeModal === 'achievements'}
         onClose={() => setActiveModal(null)}
-        title="Conquistas e Emblemas"
+        title="Conquistas"
       >
         {activeModal === 'achievements' && <AchievementsSection userState={userState} />}
       </AppDialogModal>
@@ -129,7 +129,7 @@ function HomeScreenComponent({
       <AppDialogModal
         isOpen={activeModal === 'stats'}
         onClose={() => setActiveModal(null)}
-        title="Seu Desempenho e Estatísticas"
+        title="Seu Progresso"
       >
         {activeModal === 'stats' && (
           <StatsSection

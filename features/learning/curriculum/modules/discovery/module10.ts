@@ -9,9 +9,9 @@ export const MODULE_10_INTERACAO_NATIVA: LearningModule = {
   eraId: 'era-descoberta',
   order: 10,
   title: 'Interação Nativa',
-  tagline: 'Validação e componentes vivos sem precisar de JavaScript',
+  tagline: 'Validações e componentes interativos nativos',
   description:
-    'Descubra o poder do HTML moderno: valide formulários nativamente com required e pattern, e crie acordeões com details/summary e modais com dialog.',
+    'Aprenda a validar formulários com required e pattern, e crie seções retráteis e modais usando tags nativas do HTML.',
   status: 'locked',
   xpReward: 130,
   iconName: 'zap',
@@ -19,14 +19,14 @@ export const MODULE_10_INTERACAO_NATIVA: LearningModule = {
   lessons: [
     {
       id: 'quest-html-10-1',
-      title: 'Validação Nativa: required & limites',
+      title: 'Validação Nativa: required e limites',
       durationMinutes: 4,
       isCompleted: false,
       type: 'quest',
     },
     {
       id: 'quest-html-10-2',
-      title: 'Componentes Vivos: details, summary & dialog',
+      title: 'Componentes Retráteis: details e summary',
       durationMinutes: 5,
       isCompleted: false,
       type: 'quest',
@@ -41,27 +41,27 @@ export const MODULE_10_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-10',
     moduleOrder: 10,
     moduleTitle: 'Interação Nativa',
-    title: 'Validação Nativa: required & limites',
-    subtitle: 'Impeça envios incorretos aproveitando a inteligência nativa do navegador',
+    title: 'Validação Nativa: required e limites',
+    subtitle: 'Evite envios vazios ou inválidos usando recursos nativos do navegador',
     estimatedMinutes: 4,
     totalXp: 60,
     steps: [
       {
         id: 'step-10-1-concept',
         type: 'concept',
-        title: 'O Navegador Valida por Você',
+        title: 'Validação direto no navegador',
         conceptText:
-          'Você não precisa escrever centenas de linhas de JavaScript para conferir se um campo foi preenchido. O HTML moderno possui validação nativa de alta performance:\n\n• required: atributo booleano que impede o envio do formulário se o campo estiver em branco;\n• minlength="8" / maxlength="20": define limites de caracteres para senhas ou apelidos;\n• min="18" / max="120": define limites numéricos ou de datas;\n• pattern="[0-9]{5}-[0-9]{3}": valida formatos com expressões regulares (ex: CEP brasileiro);\n• type="email": valida automaticamente se há um "@" e um domínio válido.',
+          'Não é preciso escrever linhas e linhas de JavaScript só para saber se um campo foi preenchido. O HTML moderno tem validações nativas bem práticas:\n\n• required: impede o envio se o campo estiver vazio;\n• minlength="8" / maxlength="20": define limites de tamanho para senhas ou apelidos;\n• min="18" / max="120": define valores mínimos e máximos para números ou datas;\n• pattern="[0-9]{5}-[0-9]{3}": valida formatos específicos (como CEP);\n• type="email": confere se o texto tem o formato básico de e-mail (como o "@" e o domínio).',
         codeSnippet: `<form>\n  <label for="senha">Crie uma senha (mínimo 8 dígitos):</label>\n  <input\n    type="password"\n    id="senha"\n    name="senha"\n    required\n    minlength="8"\n  >\n  <button type="submit">Cadastrar</button>\n</form>`,
         tatuTip:
-          'A validação no cliente (HTML) oferece uma resposta instantânea ao usuário, mas lembre-se: todo sistema profissional também deve revalidar os dados no servidor para garantir segurança contra invasores!',
+          'A validação no HTML dá um feedback rápido para quem está preenchendo. Ainda assim, é fundamental validar também no servidor para garantir a segurança.',
         xpReward: 15,
       },
       {
         id: 'step-10-1-completion',
         type: 'code_completion',
-        title: 'Completar Código: Campo Obrigatório',
-        question: 'Qual atributo booleano torna o preenchimento de um campo estritamente obrigatório antes do envio?',
+        title: 'Tornando um campo obrigatório',
+        question: 'Qual atributo torna o preenchimento de um campo obrigatório antes do envio?',
         codeSnippetWithBlank: `<input type="text" id="nome" name="nome" ___>`,
         correctAnswer: 'required',
         options: [
@@ -70,35 +70,35 @@ export const MODULE_10_QUESTS: Record<string, Quest> = {
             text: 'required',
             isCorrect: true,
             explanation:
-              'Correto! O atributo "required" faz o navegador bloquear o submit se o campo estiver vazio.',
+              'Correto! O atributo required faz o navegador bloquear o envio se o campo estiver em branco.',
           },
           {
             id: 'opt-comp-mandatory',
             text: 'mandatory',
             isCorrect: false,
             explanation:
-              '"mandatory" não existe na especificação HTML; a palavra-chave é "required".',
+              '"mandatory" não existe no HTML; o atributo correto é "required".',
           },
           {
             id: 'opt-comp-must',
             text: 'must-fill',
             isCorrect: false,
             explanation:
-              'Essa palavra não é reconhecida pelos navegadores.',
+              'Essa opção não faz parte dos atributos do HTML.',
           },
         ],
         correctOptionId: 'opt-comp-required',
         explanationOnCorrect:
-          'Validador acionado! O formulário agora exige o dado antes de qualquer avanço.',
+          'Boa! O atributo required impede o envio caso o campo esteja em branco.',
         explanationOnIncorrect:
-          'O termo padrão é required (obrigatório em inglês).',
+          'O termo padrão é required.',
         xpReward: 20,
       },
       {
         id: 'step-10-1-tf',
         type: 'true_false',
-        title: 'Verdadeiro ou Falso: Validação de E-mail',
-        question: 'Ao usar <input type="email">, o navegador verifica nativamente se o usuário digitou uma estrutura válida de e-mail ao tentar enviar o formulário.',
+        title: 'Verdadeiro ou Falso: validação de e-mail',
+        question: 'Ao usar <input type="email">, o navegador confere se a pessoa digitou um formato básico de e-mail antes de enviar o formulário.',
         isTrue: true,
         options: [
           {
@@ -106,19 +106,19 @@ export const MODULE_10_QUESTS: Record<string, Quest> = {
             text: 'Verdadeiro',
             isCorrect: true,
             explanation:
-              'Correto! O navegador exibe uma caixa de diálogo nativa avisando se faltar o "@" ou o domínio.',
+              'Correto! O navegador exibe um aviso se faltar o "@" ou o domínio do e-mail.',
           },
           {
             id: 'opt-tf-email-f',
             text: 'Falso',
             isCorrect: false,
             explanation:
-              'Incorreto. A validação sintática de e-mail é um recurso nativo do HTML5.',
+              'Na verdade é verdadeiro: validar a estrutura básica de e-mail é nativo do HTML5.',
           },
         ],
         correctOptionId: 'opt-tf-email-v',
         explanationOnCorrect:
-          'Precisão técnica impecável! O HTML5 cuida do trabalho pesado de validação básica.',
+          'Exato! O type="email" já avisa se o formato digitado estiver incompleto.',
         explanationOnIncorrect:
           'type="email" aciona a verificação sintática automática do navegador.',
         xpReward: 25,
@@ -132,64 +132,64 @@ export const MODULE_10_QUESTS: Record<string, Quest> = {
     moduleId: 'html-mod-10',
     moduleOrder: 10,
     moduleTitle: 'Interação Nativa',
-    title: 'Componentes Vivos: details, summary & dialog',
-    subtitle: 'Crie sanfonas retráteis e modais sem precisar de uma única linha de JavaScript',
+    title: 'Componentes Retráteis: details e summary',
+    subtitle: 'Crie menus sanfona e modais usando apenas HTML',
     estimatedMinutes: 5,
     totalXp: 60,
     steps: [
       {
         id: 'step-10-2-concept',
         type: 'concept',
-        title: 'Componentes Interativos Declarativos',
+        title: 'Elementos interativos sem JavaScript',
         conceptText:
-          'Durante anos, criar um acordeão (menu sanfona) exigia instalar bibliotecas pesadas de JavaScript. O HTML5 moderno resolveu isso nativamente:\n\n• <details> e <summary>: o contêiner <details> esconde o conteúdo até o usuário clicar. O <summary> é o título clicável que mostra uma setinha animada nativa!\n\n• <dialog>: a tag oficial para janelas modais e popups. Ela já vem com suporte a acessibilidade pelo teclado (tecla Esc fecha o modal) e backdrop de escurecimento!',
+          'Por muito tempo, criar um menu sanfona retrátil exigia bibliotecas em JavaScript. Hoje o HTML resolve isso nativamente:\n\n• <details> e <summary>: a tag <details> esconde o conteúdo até a pessoa clicar. O <summary> é o título clicável que já vem com uma setinha nativa!\n\n• <dialog>: a tag própria para modais e janelas de diálogo, com suporte a acessibilidade (fechar com Esc) e fundo escurecido.',
         codeSnippet: `<!-- Acordeão FAQ 100% nativo -->\n<details>\n  <summary>O que é o App-dev?</summary>\n  <p>Uma plataforma interativa que ensina programação na prática!</p>\n</details>`,
         tatuTip:
-          'Você pode adicionar o atributo open no <details> (<details open>) para que o painel já comece aberto na tela por padrão!',
+          'Você pode colocar o atributo open no <details> (<details open>) para que o bloco já comece aberto na página.',
         xpReward: 15,
       },
       {
         id: 'step-10-2-fix',
         type: 'code_fix',
-        title: 'Correção de Bug: O Acordeão Desordenado',
-        question: 'O código abaixo inverteu a hierarquia da tag do acordeão. Qual é o reparo correto?',
+        title: 'Organizando o acordeão',
+        question: 'O código abaixo inverteu a ordem das tags do acordeão. Qual é a estrutura correta?',
         brokenCode: `<summary>\n  <details>Como funciona a plataforma?</details>\n  <p>Resposta da pergunta...</p>\n</summary>`,
         fixedCode: `<details>\n  <summary>Como funciona a plataforma?</summary>\n  <p>Resposta da pergunta...</p>\n</details>`,
         options: [
           {
             id: 'opt-fix-10-2-a',
-            text: 'O <details> deve ser a tag pai externa, e o <summary> deve ser o primeiro filho com a pergunta.',
+            text: 'O <details> deve envolver tudo, e o <summary> deve ser o primeiro elemento com o título clicável.',
             isCorrect: true,
             explanation:
-              'Perfeito! <details> é o contêiner retrátil e <summary> é o cabeçalho clicável de abertura.',
+              'Perfeito! <details> é o bloco retrátil e <summary> é o título clicável que abre ou fecha o conteúdo.',
           },
           {
             id: 'opt-fix-10-2-b',
-            text: 'Substituir ambas as tags por botões <button>.',
+            text: 'Substituir as duas tags por botões <button>.',
             isCorrect: false,
             explanation:
-              'Para um acordeão semântico nativo sem JavaScript, a combinação oficial é <details> e <summary>.',
+              'A combinação nativa para blocos retráteis é <details> e <summary>.',
           },
           {
             id: 'opt-fix-10-2-c',
             text: 'Apagar a tag <p> com a resposta.',
             isCorrect: false,
             explanation:
-              'A resposta é o conteúdo que deve ser revelado ao clicar no summary.',
+              'O texto dentro do <p> é justamente o conteúdo que deve aparecer ao clicar.',
           },
         ],
         correctOptionId: 'opt-fix-10-2-a',
         explanationOnCorrect:
-          'Acordeão concertado com perfeição! Agora ele abre e fecha com suavidade nativa.',
+          'Boa! O <details> envolve o conteúdo e o <summary> serve de cabeçalho clicável.',
         explanationOnIncorrect:
-          'A casca externa é <details>; o rótulo clicável é <summary>.',
+          'A tag externa é <details>; o rótulo clicável é <summary>.',
         xpReward: 20,
       },
       {
         id: 'step-10-2-challenge',
         type: 'practical_challenge',
-        title: 'Desafio Prático: Estado Inicial Aberto',
-        question: 'Qual atributo booleano adicionado à tag <details> faz com que a sanfona já seja renderizada aberta na tela?',
+        title: 'Iniciando a seção aberta',
+        question: 'Qual atributo na tag <details> faz com que o conteúdo já apareça aberto na página?',
         codeSnippetWithBlank: `<details ___>\n  <summary>Termos de Uso</summary>\n  <p>Leia com atenção as cláusulas contratuais.</p>\n</details>`,
         correctAnswer: 'open',
         options: [
@@ -198,28 +198,28 @@ export const MODULE_10_QUESTS: Record<string, Quest> = {
             text: 'open',
             isCorrect: true,
             explanation:
-              'Exatamente! O atributo "open" define que o conteúdo interno do <details> já começa visível.',
+              'Exato! O atributo "open" faz com que o conteúdo do <details> já comece visível.',
           },
           {
             id: 'opt-active-attr',
             text: 'active',
             isCorrect: false,
             explanation:
-              '"active" é um pseudo-seletor em CSS, não um atributo nativo de <details>.',
+              '"active" é um pseudo-seletor do CSS, não um atributo nativo de <details>.',
           },
           {
             id: 'opt-expanded-attr',
             text: 'expanded',
             isCorrect: false,
             explanation:
-              'O atributo oficial da especificação do HTML5 para esta tag é estritamente "open".',
+              'O atributo oficial da especificação do HTML para este elemento é "open".',
           },
         ],
         correctOptionId: 'opt-open-attr',
         explanationOnCorrect:
-          'Sanfona aberta com sucesso! open é o controle de estado declarativo do elemento details.',
+          'Muito bem! Com o atributo open, a seção já aparece expandida.',
         explanationOnIncorrect:
-          'Para abrir por padrão, use o atributo simples: open.',
+          'Para que o conteúdo já comece visível, use o atributo: open.',
         xpReward: 25,
       },
     ],

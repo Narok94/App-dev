@@ -57,7 +57,7 @@ function LevelProgressCardComponent({ levelProgress, userXp }: LevelProgressCard
           <span>
             {levelProgress.nextLevel
               ? `${levelProgress.xpRequiredForNextLevel} XP para ${levelProgress.nextLevel.title}`
-              : 'Nível Máximo Alcançado!'}
+              : 'Nível máximo alcançado'}
           </span>
         </div>
       </div>

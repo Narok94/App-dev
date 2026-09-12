@@ -28,12 +28,12 @@ export function QuizFeedbackPanel({
           {isCorrect ? (
             <>
               <Check className="w-4 h-4 text-[#C8F03D]" />
-              <span>Boa! Mandou bem no código. 🎯</span>
+              <span>Na mosca! Resposta certa. 🎯</span>
             </>
           ) : (
             <>
               <AlertCircle className="w-4 h-4 text-[#FF6B4A]" />
-              <span>Quase lá! Dá uma olhada no código de novo. 💡</span>
+              <span>Não foi dessa vez. Dá uma olhada com calma: 💡</span>
             </>
           )}
         </div>
@@ -51,9 +51,9 @@ export function QuizFeedbackPanel({
 
       <div className="fb-text">
         {isCorrect
-          ? explanationOnCorrect || 'Excelente raciocínio! Você aplicou a sintaxe correta.'
+          ? explanationOnCorrect || 'Muito bem! Você acertou a resposta.'
           : explanationOnIncorrect ||
-            'Faz parte errar no início! Releia a estrutura da tag e tente novamente.'}
+            'Sem problemas errar, o importante é tentar de novo.'}
       </div>
     </motion.div>
   );

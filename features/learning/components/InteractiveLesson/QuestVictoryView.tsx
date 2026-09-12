@@ -64,14 +64,14 @@ export function QuestVictoryView({
 
         {/* Tag de Vitória */}
         <motion.div variants={itemVariants} className="tag tag-lime mx-auto mb-0">
-          ✦ Missão Cumprida!
+          ✦ Lição Concluída!
         </motion.div>
 
         {/* Título & Mensagem da Vitória */}
         <motion.div variants={itemVariants} className="space-y-1">
-          <h2 className="q-title text-xl sm:text-2xl text-white mb-1">Mandou bem demais! 🎉</h2>
+          <h2 className="q-title text-xl sm:text-2xl text-white mb-1">Mandou muito bem! 🎉</h2>
           <p className="text-xs text-[#9096AC] leading-relaxed max-w-xs mx-auto">
-            Você concluiu todos os passos com sucesso e dominou{' '}
+            Você completou todas as etapas e praticou{' '}
             <span className="text-[#F2F1EA] font-semibold">{lesson.title}</span>.
           </p>
         </motion.div>
@@ -79,7 +79,7 @@ export function QuestVictoryView({
         {/* Baú de Recompensa (Loot de XP) */}
         <motion.div variants={itemVariants} className="rounded-2xl border border-[#C8F03D]/30 bg-[#202538] p-3 sm:p-3.5 text-center shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
           <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#9096AC] block mb-0.5">
-            Experiência Conquistada
+            XP conquistado
           </span>
 
           <div className="font-baloo font-bold text-2xl sm:text-3xl text-[#C8F03D] flex items-center justify-center gap-1.5 drop-shadow-[0_0_12px_rgba(200,240,61,0.5)]">
@@ -88,34 +88,34 @@ export function QuestVictoryView({
           </div>
 
           <p className="text-[10px] sm:text-[11px] text-[#9096AC] mt-0.5 font-medium">
-            Somado ao seu progresso de desenvolvedor
+            Adicionado ao seu perfil
           </p>
         </motion.div>
 
         {/* Conhecimentos Consolidados (Perks da Jornada) */}
         <motion.div variants={itemVariants} className="text-left rounded-2xl border border-[#2C3247] bg-[#161926] p-3 sm:p-3.5 text-xs space-y-2">
           <span className="font-bold uppercase tracking-wider text-[10px] text-[#9096AC] block mb-0.5">
-            O que você destravou:
+            O que você praticou:
           </span>
 
           <div className="flex items-center gap-2 text-[#C8F03D]">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
             <span className="text-[#F2F1EA] font-medium text-xs">
-              Sintaxe e tags essenciais compreendidas na prática
+              Conceitos e tags essenciais na prática
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-[#C8F03D]">
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
             <span className="text-[#F2F1EA] font-medium text-xs">
-              Desafios e perguntas respondidas com sucesso
+              Exercícios resolvidos com sucesso
             </span>
           </div>
 
           <div className="flex items-center gap-2 text-[#8B7CF6]">
             <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
             <span className="text-[#9096AC] font-medium text-xs">
-              Pronto para avançar para a próxima etapa da trilha
+              Pronto para a próxima lição
             </span>
           </div>
         </motion.div>
@@ -129,7 +129,7 @@ export function QuestVictoryView({
           onClick={onContinue}
           className="btn-primary ready w-full py-3.5 sm:py-4 text-base rounded-2xl shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2 group mt-1 select-none"
         >
-          <span>Continuar Jornada</span>
+          <span>Continuar</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </motion.button>
       </div>

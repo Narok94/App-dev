@@ -78,8 +78,8 @@ export function ProfileSettingsModal({
               <User className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[#F8FAFC]">Perfil & Configurações Dev</h2>
-              <p className="text-xs text-[#94A3B8]">Personalize seus parâmetros no App-dev</p>
+              <h2 className="text-base font-bold text-[#F8FAFC]">Perfil e Configurações</h2>
+              <p className="text-xs text-[#94A3B8]">Ajuste suas preferências no Tatu</p>
             </div>
           </div>
           <button
@@ -113,7 +113,7 @@ export function ProfileSettingsModal({
                     onChange={(e) => setEditingName(e.target.value)}
                     maxLength={25}
                     className="w-full px-3 py-1.5 text-sm font-bold rounded-xl border border-[#3B82F6] bg-[#0F172A] text-[#F8FAFC] focus:outline-hidden focus:ring-2 focus:ring-[#3B82F6]/30"
-                    placeholder="Seu apelido dev"
+                    placeholder="Como prefere ser chamado?"
                     autoFocus
                   />
                   <button
@@ -139,7 +139,7 @@ export function ProfileSettingsModal({
               )}
 
               <p className="text-xs text-[#64748B] mt-1">
-                Ambiente de Desenvolvimento &bull; Trilha HTML Core
+                Trilha Web &bull; HTML
               </p>
             </div>
           </div>
@@ -177,8 +177,8 @@ export function ProfileSettingsModal({
             paddingBottom: 'max(12px, calc(env(safe-area-inset-bottom, 0px) + 8px))',
           }}
         >
-          <span>App-dev v2.0 &bull; Trilha Web</span>
-          <span className="font-semibold text-[#38BDF8]">Tecnologia & Programação</span>
+          <span>Tatu v2.0 &bull; Trilha Web</span>
+          <span className="font-semibold text-[#38BDF8]">Aprenda programação na prática</span>
         </div>
       </div>
     </div>

@@ -28,7 +28,7 @@ export function AchievementsSummaryCard({
       <div>
         <h3>Suas conquistas</h3>
         <p>
-          {unlockedCount} de {totalCount} desbloqueadas
+          {unlockedCount} de {totalCount} conquistadas
         </p>
       </div>
       <div className="badge-icons">
@@ -36,7 +36,7 @@ export function AchievementsSummaryCard({
           <div
             key={ach.id}
             className={`badge-circle ${ach.unlocked ? 'teal' : 'locked'}`}
-            title={`${ach.title}: ${ach.unlocked ? 'Desbloqueada' : 'Bloqueada'}`}
+            title={`${ach.title}: ${ach.unlocked ? 'Conquistada' : 'Bloqueada'}`}
           >
             {ach.unlocked ? ach.icon : '🔒'}
           </div>

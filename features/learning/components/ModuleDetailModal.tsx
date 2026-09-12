@@ -110,14 +110,14 @@ export function ModuleDetailModal({ module, onClose, onStartLesson }: ModuleDeta
           <div className="h-3 w-px bg-[#D9D1C5]" />
           <div className="flex items-center gap-1.5">
             <BookOpen className="h-3.5 w-3.5 text-[#7A6E63]" />
-            <span>{module.lessons.length} aulas</span>
+            <span>{module.lessons.length} lições</span>
           </div>
         </div>
 
         {/* Grade de Aulas do Módulo */}
         <div className="mt-4">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-[#7A6E63] mb-2">
-            Estrutura das Aulas
+            Lições do módulo
           </h4>
           <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
             {module.lessons.map((lesson, idx) => (
@@ -156,9 +156,9 @@ export function ModuleDetailModal({ module, onClose, onStartLesson }: ModuleDeta
           <div className="mt-5 rounded-xl border border-[#DFD6CA] bg-[#F5F0E8] p-3.5 flex items-center gap-3">
             <TatuMascot size="sm" mood="thinking" />
             <div className="text-xs text-[#5C5146]">
-              <p className="font-semibold text-[#3D3228]">Caminho trancado por enquanto!</p>
+              <p className="font-semibold text-[#3D3228]">Módulo bloqueado por enquanto</p>
               <p className="mt-0.5">
-                Complete os módulos anteriores na trilha para liberar esta etapa com o Tatu.
+                Complete as lições anteriores para liberar este módulo.
               </p>
             </div>
           </div>
@@ -171,14 +171,14 @@ export function ModuleDetailModal({ module, onClose, onStartLesson }: ModuleDeta
               <Play className="h-4 w-4 fill-current" />
               <span>
                 {isCompleted
-                  ? 'Revisar Conteúdo'
+                  ? 'Revisar lições'
                   : nextLesson
-                  ? `Iniciar: ${nextLesson.title}`
-                  : 'Iniciar Lição'}
+                  ? `Começar: ${nextLesson.title}`
+                  : 'Começar lição'}
               </span>
             </button>
             <p className="mt-2 text-center text-[11px] text-[#7A6E63]">
-              Aprenda no seu ritmo com o Mascote Tatu ao seu lado.
+              Aprenda no seu ritmo com prática e exemplos rápidos.
             </p>
           </div>
         )}

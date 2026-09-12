@@ -22,7 +22,7 @@ export function ConceptStepView({
           {/* Tag de Descoberta RPG */}
           <div className="tag tag-violet">
             <Sparkles className="w-3 h-3 text-[#8B7CF6]" />
-            <span>Revelação de Conhecimento</span>
+            <span>Novo Conceito</span>
           </div>
 
           {/* Título do Conceito */}
@@ -57,7 +57,7 @@ export function ConceptStepView({
                 </div>
                 <div className="space-y-0.5">
                   <div className="text-[11px] sm:text-xs font-baloo font-bold uppercase tracking-wider text-[#C8F03D] flex items-center gap-1.5">
-                    Pergaminho de Sabedoria
+                    Dica do Tatu
                   </div>
                   <p className="text-xs text-[#9096AC] leading-relaxed">
                     {step.tatuTip}
@@ -76,7 +76,7 @@ export function ConceptStepView({
           onClick={onAdvance}
           className="btn-primary ready w-full py-3.5 sm:py-4 text-base rounded-2xl shadow-[0_4px_0_var(--lime-dark)] active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2 group select-none"
         >
-          <span>{isLastStep ? 'Concluir Quest 🏆' : 'Compreendido! Próxima Etapa'}</span>
+          <span>{isLastStep ? 'Concluir lição 🏆' : 'Entendi, avançar'}</span>
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>

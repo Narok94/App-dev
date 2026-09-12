@@ -12,7 +12,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era da Descoberta',
     subtitle: 'HTML & Fundamentos da Web',
     description:
-      'O início da jornada no App-dev. Domine a estrutura básica, tags essenciais e o esqueleto semântico que dá vida a qualquer página na web.',
+      'Aprenda a estrutura básica, as principais tags e como montar qualquer página na web.',
     technology: 'HTML5',
     iconName: 'compass',
     status: 'current',
@@ -38,7 +38,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era da Construção — CSS',
     subtitle: 'CSS3, Layouts & Design Visual',
     description:
-      'Dê cor, elegância, layout e dinamismo visual ao esqueleto HTML com Flexbox, Grid e boas práticas modernas de design.',
+      'Aprenda a estilizar suas páginas com cores, espaçamentos, Flexbox e Grid.',
     technology: 'CSS3',
     iconName: 'palette',
     status: 'locked',
@@ -51,7 +51,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era da Interatividade',
     subtitle: 'JavaScript & Lógica Dinâmica',
     description:
-      'Dê inteligência e comportamento vivo às suas interfaces com manipulação de DOM e lógica orientada a eventos.',
+      'Adicione interatividade às suas páginas com lógica, variáveis e eventos.',
     technology: 'JavaScript',
     iconName: 'zap',
     status: 'locked',
@@ -64,7 +64,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era das Versões',
     subtitle: 'Git & Colaboração em Código',
     description:
-      'Crie linhas do tempo, ramificações e domine a colaboração profissional em repositórios.',
+      'Aprenda a versionar seu código com Git e a salvar seus projetos no GitHub.',
     technology: 'Git & GitHub',
     iconName: 'git-branch',
     status: 'locked',
@@ -77,7 +77,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era da Precisão',
     subtitle: 'TypeScript & Arquitetura Segura',
     description:
-      'Eleve seus códigos a outro nível com tipagem estática, interfaces e detecção precoce de erros.',
+      'Escreva código JavaScript mais seguro usando tipos estáticos e interfaces.',
     technology: 'TypeScript',
     iconName: 'shield',
     status: 'locked',
@@ -90,7 +90,7 @@ export const ERAS_CATALOG: Era[] = [
     title: 'Era dos Reinos',
     subtitle: 'React & Componentização',
     description:
-      'Construa ecossistemas completos com componentes reutilizáveis, hooks reativos e estados escaláveis.',
+      'Crie interfaces modernas e interativas dividindo a tela em componentes reutilizáveis.',
     technology: 'React',
     iconName: 'layers',
     status: 'locked',
